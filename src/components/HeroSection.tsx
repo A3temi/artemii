@@ -6,8 +6,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import Confetti from "react-confetti";
 
 const HeroSection = () => {
-
     const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+    const [achievementClicks, setAchievementClicks] = useState(0);
+
+    const handleAchievementClick = () => {
+      setAchievementClicks((prev) => (prev + 1) % 8); // Reset to 0 after 7 clicks
+      setShowAchievements((prev) => !prev);
+    };
 
     useEffect(() => {
     const updateSize = () => {
@@ -23,33 +28,48 @@ const HeroSection = () => {
     }, []);
     
     const [showAchievements, setShowAchievements] = useState(false);
-    const [confettiActive, setConfettiActive] = useState(false);
     const { width, height } = windowSize;
+    const [confettiInstances, setConfettiInstances] = useState<number[]>([]);
 
-  useEffect(() => {
-    if (showAchievements) {
-      setConfettiActive(true);
-      setTimeout(() => setConfettiActive(false), 5000); // Confetti lasts for 2 seconds
-    }
+    useEffect(() => {
+      if (showAchievements) {
+          const id = Date.now(); // Unique ID for each confetti instance
+          setConfettiInstances((prev) => [...prev, id]);
+
+          const timeout = setTimeout(() => {
+              setConfettiInstances((prev) => prev.filter((confettiId) => confettiId !== id));
+          }, 5000); // Confetti lasts 5 seconds
+
+          return () => clearTimeout(timeout);
+      }
   }, [showAchievements]);
 
   return (
-    <section className="flex items-center justify-center w-full text-[#F8ECE4] px-4 sm:px-6 md:px-12">
-      {confettiActive && (
+    <section className="flex items-center justify-center w-full text-[#F8ECE4] px-4 sm:px-6 md:px-12 mt-24">
+      {confettiInstances.map((id) => (
         <Confetti
-        width={width}
-        height={height}
-        numberOfPieces={100}
-        recycle={false}
-        colors={["#FFD700", "#FFEC8B", "#FFF5CC"]}
-        drawShape={(ctx) => {
-          ctx.beginPath();
-          ctx.arc(0, 0, 5, 0, 2 * Math.PI);
-          ctx.fill();
-        }}
-        confettiSource={{ x: 0, y: 0, w: width, h: height }} // Ensures confetti spawns within the visible area
+          key={id}
+          width={width}
+          height={height}
+          numberOfPieces={achievementClicks === 7 ? 1000 : 100}
+          recycle={false}
+          colors={["#FFD700", "#FFEC8B", "#FFF5CC"]}
+          drawShape={(ctx) => {
+            ctx.beginPath();
+            ctx.arc(0, 0, 5, 0, 2 * Math.PI);
+            ctx.fill();
+          }}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            pointerEvents: "none",
+            zIndex: 9999,
+          }}
         />
-      )}
+      ))}
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -81,7 +101,7 @@ const HeroSection = () => {
           <div className="absolute top-4 right-4 sm:top-5 sm:right-5">
             <p
               className="text-lg font-semibold text-[#FFD700] cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => setShowAchievements(!showAchievements)}
+              onClick={() => handleAchievementClick()}
             >
               Achievements {showAchievements ? "▲" : "▼"}
             </p>

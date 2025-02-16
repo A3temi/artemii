@@ -12,7 +12,10 @@ const AboutSection = () => {
 
   useEffect(() => {
     if (isInView) {
-      count.set(0.8); // Start animation when visible
+      setTimeout(() => {
+        count.set(0.8); // Start animation after 0.5s delay
+      }, 500);
+      
       animatedCount.on("change", (val) => {
         setDisplayCount(parseFloat(val.toFixed(1))); // Ensure it's a number
       });
@@ -20,7 +23,7 @@ const AboutSection = () => {
   }, [isInView, count, animatedCount]);
 
   return (
-    <section className="flex flex-col md:flex-row justify-between items-center w-full text-[#F8ECE4] p-6 md:p-12 gap-10">
+    <section className="flex flex-col md:flex-row justify-between items-center w-full text-[#F8ECE4] p-6 md:p-12 gap-10 mt-14">
       {/* Left: About Section */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}
@@ -51,7 +54,7 @@ const AboutSection = () => {
       {/* Right: Animated Years of Experience */}
       <div
         ref={counterRef}
-        className="flex flex-col justify-center items-center border border-[#FFF7D6] p-6 md:p-10 shadow-lg rounded-xl w-full md:w-1/3"
+        className="flex flex-col justify-center items-center p-6 md:p-10 rounded-xl w-full md:w-1/3"
       >
         <h3 className="text-3xl md:text-4xl font-bold text-[#FFF7D6] mb-4">Experience</h3>
         <motion.p className="text-5xl md:text-6xl font-extrabold text-[#F8ECE4]" style={{ scale: 1.1 }}>
