@@ -14,7 +14,7 @@ const AboutSection = () => {
     if (isInView) {
       count.set(0.8); // Start animation when visible
       animatedCount.on("change", (val) => {
-        setDisplayCount(val.toFixed(1));
+        setDisplayCount(parseFloat(val.toFixed(1))); // Ensure it's a number
       });
     }
   }, [isInView, count, animatedCount]);
