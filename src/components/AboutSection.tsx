@@ -1,36 +1,63 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState, useRef } from "react";
+import { motion, useSpring, useMotionValue, useInView } from "framer-motion";
 
 const AboutSection = () => {
+  const count = useMotionValue(0);
+  const animatedCount = useSpring(count, { stiffness: 100, damping: 10 });
+  const [displayCount, setDisplayCount] = useState(0);
+  const counterRef = useRef(null);
+  const isInView = useInView(counterRef, { once: true, margin: "-50px" });
+
+  useEffect(() => {
+    if (isInView) {
+      count.set(0.8); // Start animation when visible
+      animatedCount.on("change", (val) => {
+        setDisplayCount(val.toFixed(1));
+      });
+    }
+  }, [isInView, count, animatedCount]);
+
   return (
-    <section className="flex justify-center items-center w-full text-[#F8ECE4] p-6 md:p-12">
+    <section className="flex flex-col md:flex-row justify-between items-center w-full text-[#F8ECE4] p-6 md:p-12 gap-10">
+      {/* Left: About Section */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="relative border-t border-l border-[#FFF7D6] border-b-[10px] border-r-[10px] border-[#FFF7D6] p-6 md:p-10 flex flex-col items-center md:items-start w-full max-w-4xl shadow-lg rounded-xl"
+        className="relative border-t border-l border-[#FFF7D6] border-b-[10px] border-r-[10px] border-[#FFF7D6] p-6 md:p-10 flex flex-col items-center md:items-start w-full md:w-2/3 shadow-lg rounded-xl"
       >
         {/* Title */}
         <h2 className="text-4xl md:text-5xl font-extrabold mb-6 text-[#F8ECE4]">About</h2>
-        
+
         {/* Description */}
         <p className="text-lg md:text-xl leading-relaxed">
           I&apos;m a full-stack web developer with a background in data analysis, digital creation, and entrepreneurship.
-          I specialize in <span className="font-semibold">React, Node.js, API integration, SQL,</span> and cloud services, 
-          building efficient and engaging web applications. I’ve completed <span className="font-semibold">100+ hours</span> of hands-on IT training, 
-          developing projects like <span className="font-semibold">CaseClicker.online</span> and <span className="font-semibold">Pollution Zero</span>—an 
-          award-winning game that secured <span className="font-semibold">1st Place at FireHacks Fall 2024</span> for its AI-driven approach to 
+          I specialize in <span className="font-semibold">React, Node.js, API integration, SQL,</span> and cloud services,
+          building efficient and engaging web applications. I’ve completed <span className="font-semibold">100+ hours</span> of hands-on IT training,
+          developing projects like <span className="font-semibold">CaseClicker.online</span> and <span className="font-semibold">Pollution Zero</span>—an
+          award-winning game that secured <span className="font-semibold">1st Place at FireHacks Fall 2024</span> for its AI-driven approach to
           environmental awareness.
         </p>
 
         <p className="text-lg md:text-xl leading-relaxed mt-6">
-          With experience in project management, video editing, and digital marketing, 
-          I combine technical expertise with creativity to build impactful digital solutions. 
+          With experience in project management, video editing, and digital marketing,
+          I combine technical expertise with creativity to build impactful digital solutions.
           Open to web development opportunities!
         </p>
       </motion.div>
+
+      {/* Right: Animated Years of Experience */}
+      <div
+        ref={counterRef}
+        className="flex flex-col justify-center items-center border border-[#FFF7D6] p-6 md:p-10 shadow-lg rounded-xl w-full md:w-1/3"
+      >
+        <h3 className="text-3xl md:text-4xl font-bold text-[#FFF7D6] mb-4">Experience</h3>
+        <motion.p className="text-5xl md:text-6xl font-extrabold text-[#F8ECE4]" style={{ scale: 1.1 }}>
+          {displayCount} <span className="text-2xl">years</span>
+        </motion.p>
+      </div>
     </section>
   );
 };
