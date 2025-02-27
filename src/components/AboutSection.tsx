@@ -1,9 +1,20 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { motion, useSpring, useMotionValue, useInView } from "framer-motion";
+import { motion, useSpring, useMotionValue, useInView, useTransform, useScroll } from "framer-motion";
 
 const AboutSection = () => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  // Prevent horizontal scrollbar by limiting movement range
+  const rawX = useTransform(scrollYProgress, [0, 0.5, 1], ["calc(100vw - 100%)", "0vw", "0vw"]);
+  const x = useSpring(rawX, { stiffness: 50, damping: 20 });
+
+  // Experience Counter Animation
   const count = useMotionValue(0);
   const animatedCount = useSpring(count, { stiffness: 100, damping: 10 });
   const [displayCount, setDisplayCount] = useState(0);
@@ -15,7 +26,7 @@ const AboutSection = () => {
       setTimeout(() => {
         count.set(0.8); // Start animation after 0.5s delay
       }, 500);
-      
+
       animatedCount.on("change", (val) => {
         setDisplayCount(parseFloat(val.toFixed(1))); // Ensure it's a number
       });
@@ -23,12 +34,16 @@ const AboutSection = () => {
   }, [isInView, count, animatedCount]);
 
   return (
-    <section className="flex flex-col md:flex-row justify-between items-center w-full text-[#F8ECE4] p-6 md:p-12 gap-10 mt-14">
+    <motion.section
+      ref={ref}
+      style={{ x }}
+      className="flex flex-col md:flex-row justify-between items-center w-full text-[#F8ECE4] p-6 md:p-12 gap-10 mt-14 overflow-hidden"
+    >
       {/* Left: About Section */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
         className="relative border-t border-l border-[#FFF7D6] border-b-[10px] border-r-[10px] border-[#FFF7D6] p-6 md:p-10 flex flex-col items-center md:items-start w-full md:w-2/3 shadow-lg rounded-xl"
       >
         {/* Title */}
@@ -57,11 +72,14 @@ const AboutSection = () => {
         className="flex flex-col justify-center items-center p-6 md:p-10 rounded-xl w-full md:w-1/3"
       >
         <h3 className="text-3xl md:text-4xl font-bold text-[#FFF7D6] mb-4">Experience</h3>
-        <motion.p className="text-5xl md:text-6xl font-extrabold text-[#F8ECE4]" style={{ scale: 1.1 }}>
+        <motion.p
+          className="text-5xl md:text-6xl font-extrabold text-[#F8ECE4]"
+          style={{ scale: 1.1 }}
+        >
           {displayCount} <span className="text-2xl">years</span>
         </motion.p>
       </div>
-    </section>
+    </motion.section>
   );
 };
 

@@ -4,4 +4,5 @@
 
 body {
   @apply bg-[#2A272A] text-[#F8ECE4];
+  overflow-x: hidden;
 }
