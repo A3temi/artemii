@@ -39,7 +39,7 @@ const experiences = [
 
 const ExperienceSection = () => {
   const [selectedExp, setSelectedExp] = useState(experiences[0]);
-  const [zoomedImage, setZoomedImage] = useState(null);
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const [showAllImages, setShowAllImages] = useState(false);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -66,7 +66,11 @@ const ExperienceSection = () => {
                 selectedExp.title === exp.title ? "text-[#FFF7D6]" : "hover:text-[#FFF7D6]/70"
               }`}
             >
-              <img src={`/icons/exp${index + 1}.png`} alt={exp.title} className="w-12 h-12 object-contain" />
+              <img
+                src={`/icons/exp${index + 1}.png`}
+                alt={exp.title || "Experience Icon"}
+                className="w-12 h-12 object-contain"
+              />
               <span>{exp.title}</span>
             </li>
           ))}
@@ -155,7 +159,7 @@ const ExperienceSection = () => {
                         onClick={() => setZoomedImage(img)}
                       >
                         <img
-                          src={img}
+                          src={img ?? ""}
                           alt={`Project screenshot ${index + 1}`}
                           className="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-300 hover:scale-105"
                         />
