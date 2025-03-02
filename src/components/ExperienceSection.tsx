@@ -94,7 +94,7 @@ const ExperienceSection = () => {
               words={[selectedExp.title]}
               loop={1}
               cursor={false}
-              typeSpeed={1}
+              typeSpeed={30}
               deleteSpeed={15}
               delaySpeed={150}
             />
@@ -106,7 +106,7 @@ const ExperienceSection = () => {
               words={[selectedExp.duration]}
               loop={1}
               cursor={false}
-              typeSpeed={1}
+              typeSpeed={30}
               deleteSpeed={15}
               delaySpeed={150}
             />

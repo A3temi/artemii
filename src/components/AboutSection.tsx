@@ -11,7 +11,7 @@ const AboutSection = () => {
   });
 
   // Prevent horizontal scrollbar by limiting movement range
-  const rawX = useTransform(scrollYProgress, [0, 0.5, 1], ["calc(100vw - 100%)", "0vw", "0vw"]);
+  const rawX = useTransform(scrollYProgress, [0, 0.3, 1], ["calc(100vw - 100%)", "0vw", "0vw"]);
   const x = useSpring(rawX, { stiffness: 50, damping: 20 });
 
   // Experience Counter Animation
