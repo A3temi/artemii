@@ -1,6 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Aboreto&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.font-aboreto {
+  font-family: 'Aboreto', cursive;
+}
 
 body {
   @apply bg-[#2A272A] text-[#F8ECE4];
