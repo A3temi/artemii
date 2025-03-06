@@ -12,11 +12,11 @@ const AboutSection = () => {
 
   // Prevent horizontal scrollbar by limiting movement range
   const rawX = useTransform(scrollYProgress, [0, 0.3, 1], ["calc(100vw - 100%)", "0vw", "0vw"]);
-  const x = useSpring(rawX, { stiffness: 50, damping: 20 });
+  const x = useSpring(rawX, { stiffness: 500, damping: 200 });
 
   // Experience Counter Animation
   const count = useMotionValue(0);
-  const animatedCount = useSpring(count, { stiffness: 100, damping: 10 });
+  const animatedCount = useSpring(count, { stiffness: 20, damping: 10 });
   const [displayCount, setDisplayCount] = useState(0);
   const counterRef = useRef(null);
   const isInView = useInView(counterRef, { once: true, margin: "-50px" });
@@ -24,7 +24,7 @@ const AboutSection = () => {
   useEffect(() => {
     if (isInView) {
       setTimeout(() => {
-        count.set(0.8); // Start animation after 0.5s delay
+        count.set(1.2); // Start animation after 0.5s delay
       }, 500);
 
       animatedCount.on("change", (val) => {
@@ -37,6 +37,7 @@ const AboutSection = () => {
     <motion.section
       ref={ref}
       style={{ x }}
+      id="section-2"
       className="flex flex-col md:flex-row justify-between items-center w-full text-[#F8ECE4] p-6 md:p-12 gap-10 mt-14 overflow-hidden"
     >
       {/* Left: About Section */}

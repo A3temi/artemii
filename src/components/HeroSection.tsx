@@ -21,6 +21,7 @@ const medals = [
 const HeroSection = () => {
     const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
     const [achievementClicks, setAchievementClicks] = useState(0);
+    const [showIntro, setShowIntro] = useState(true);
 
     const handleAchievementClick = (link: string) => {
       setAchievementClicks((prev) => (prev + 1) % 8); // Reset to 0 after 7 clicks
@@ -59,7 +60,26 @@ const HeroSection = () => {
   }, [showAchievements]);
 
   return (
-    <section className="flex items-center justify-center w-full text-[#F8ECE4] px-4 sm:px-6 md:px-12 mt-24">
+    <section id="section-1" className="flex items-center justify-center w-full text-[#F8ECE4] px-4 sm:px-6 md:px-12 mt-24">
+      {showIntro && (
+        <motion.div
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 0 }}
+          transition={{ duration: 2.5, ease: "easeInOut" }}
+          onAnimationComplete={() => setShowIntro(false)}
+          className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-[#2A272A] z-50"
+        >
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+            className="text-white text-4xl md:text-6xl font-bold"
+          >
+            Hey
+          </motion.h1>
+        </motion.div>
+      )}
+
       {confettiInstances.map((id) => (
         <Confetti
           key={id}
@@ -90,14 +110,21 @@ const HeroSection = () => {
         transition={{ duration: 0.8 }}
         className="flex flex-col md:flex-row flex-wrap items-center md:items-stretch text-center md:text-left w-full max-w-7xl"
       >
+
         {/* Sidebar (Navigation) */}
         <nav className="text-[#FFEACF] text-lg sm:text-xl md:text-2xl font-bold flex flex-col justify-center space-y-6 md:space-y-8 md:pr-12 w-full md:w-1/4 mb-6 md:mb-0">
-          {["1. Here", "2. About", "3. Experience", "4. Projects", "5. Certifications", "6. Volunteering"].map((item, index) => (
+          {["1. Here", "2. About", "3. Experience", "4. Projects", "5. Quote"].map((item, index) => (
             <motion.p
               key={index}
               whileHover={{ scale: 1.1, x: 5 }}
               transition={{ type: "spring", stiffness: 200 }}
               className="cursor-pointer"
+              onClick={() => {
+                document.getElementById(`section-${index + 1}`)?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }}
             >
               {item}
             </motion.p>
@@ -164,7 +191,7 @@ const HeroSection = () => {
               { label: "Location", value: "Greater Kuala Lumpur, Malaysia" },
               { label: "LinkedIn", value: "https://www.linkedin.com/in/a3temii", isLink: true },
               { label: "Languages", value: "English / Russian" },
-              { label: "Total experience", value: "0.5 years" },
+              { label: "Total experience", value: "1.2 years" },
               { label: "Education", value: "Current UCSI Computer Science Data Science Student" }
             ].map((info, index) => (
               <p key={index}>
