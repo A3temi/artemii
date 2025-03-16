@@ -65,7 +65,7 @@ const ProjectsSection = () => {
         initial={{ opacity: 0, y: -50 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5, delay: 0.5 }}
-        className="w-full md:w-1/3 border-r border-[#FFF7D6] p-6"
+        className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-[#FFF7D6] p-6"
       >
         <h3 className="text-3xl font-bold text-center mb-6">Projects</h3>
         <ul className="divide-y divide-[#FFF7D6]/50">

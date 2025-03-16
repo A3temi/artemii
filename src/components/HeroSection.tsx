@@ -112,7 +112,7 @@ const HeroSection = () => {
       >
 
         {/* Sidebar (Navigation) */}
-        <nav className="text-[#FFEACF] text-lg sm:text-xl md:text-2xl font-bold flex flex-col justify-center space-y-6 md:space-y-8 md:pr-12 w-full md:w-1/4 mb-6 md:mb-0">
+        <nav className="text-[#FFEACF] text-lg sm:text-xl md:text-2xl font-bold flex flex-row md:flex-col justify-center space-x-6 md:space-x-0 space-y-0 md:space-y-8 md:pr-12 w-full md:w-1/4 mb-6 md:mb-0">
           {["1. Here", "2. About", "3. Experience", "4. Projects", "5. Quote"].map((item, index) => (
             <motion.p
               key={index}
@@ -150,10 +150,10 @@ const HeroSection = () => {
               alt="Profile Picture"
               width={100}
               height={100}
-              className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 object-cover mb-4 rounded-full"
+              className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 object-cover rounded-full"
             />
             {/* Achievements List */}
-            <div className="flex space-x-4 mt-4">
+            <div className="flex space-x-1 mt-2">
               {medals.map((medal, index) => (
                 <motion.div
                   key={index}
