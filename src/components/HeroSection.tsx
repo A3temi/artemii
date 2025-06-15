@@ -113,7 +113,7 @@ const HeroSection = () => {
 
         {/* Sidebar (Navigation) */}
         <nav className="text-[#FFEACF] text-lg sm:text-xl md:text-2xl font-bold flex flex-row md:flex-col justify-center space-x-6 md:space-x-0 space-y-0 md:space-y-8 md:pr-12 w-full md:w-1/4 mb-6 md:mb-0">
-          {["1. Here", "2. About", "3. Experience", "4. Projects", "5. Quote"].map((item, index) => (
+          {["Here", "About", "Experience", "Projects", "Quote"].map((item, index) => (
             <motion.p
               key={index}
               whileHover={{ scale: 1.1, x: 5 }}
@@ -191,7 +191,7 @@ const HeroSection = () => {
               { label: "Location", value: "Greater Kuala Lumpur, Malaysia" },
               { label: "LinkedIn", value: "https://www.linkedin.com/in/a3temii", isLink: true },
               { label: "Languages", value: "English / Russian" },
-              { label: "Total experience", value: "1.2 years" },
+              { label: "Total experience", value: "1.4 years" },
               { label: "Education", value: "Current UCSI Computer Science Data Science Student" }
             ].map((info, index) => (
               <p key={index}>
