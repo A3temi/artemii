@@ -18,6 +18,36 @@ const AboutSection = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Prevent zoom and horizontal scroll on mobile
+  useEffect(() => {
+    if (isMobile) {
+      // Disable zoom and horizontal scroll on mobile
+      const viewport = document.querySelector('meta[name="viewport"]');
+      if (viewport) {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+      } else {
+        const newViewport = document.createElement('meta');
+        newViewport.name = 'viewport';
+        newViewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        document.head.appendChild(newViewport);
+      }
+
+      // Prevent horizontal overflow on body
+      document.body.style.overflowX = 'hidden';
+      document.documentElement.style.overflowX = 'hidden';
+      
+      return () => {
+        // Restore original viewport settings
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+        }
+        document.body.style.overflowX = '';
+        document.documentElement.style.overflowX = '';
+      };
+    }
+  }, [isMobile]);
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
@@ -74,81 +104,83 @@ const AboutSection = () => {
   };
 
   return (
-    <motion.section
-      ref={ref}
-      style={!isMobile ? { x } : {}} // Only apply x transform on desktop
-      id="section-2"
-      className="w-full text-[#F8ECE4] px-4 md:p-12 mt-8 md:mt-14 overflow-hidden" // Added overflow-hidden
-      initial={isMobile ? "hidden" : undefined}
-      whileInView={isMobile ? "visible" : undefined}
-      viewport={isMobile ? { once: true, margin: "-10%" } : undefined}
-      variants={isMobile ? mobileVariants : undefined}
-    >
-      <div className="flex flex-col md:flex-row justify-between items-stretch gap-4 md:gap-10 max-w-full"> {/* Added max-w-full */}
-        {/* Left: About Section */}
-        <motion.div
-          initial={isMobile ? undefined : { opacity: 0, y: 50 }}
-          animate={isMobile ? undefined : { opacity: 1, y: 0 }}
-          transition={isMobile ? undefined : { duration: 0.8, ease: "easeOut" }}
-          variants={isMobile ? mobileItemVariants : undefined}
-          className="relative border-t border-l border-[#FFF7D6] border-b-2 md:border-b-[10px] border-r-2 md:border-r-[10px] border-[#FFF7D6] p-4 md:p-10 flex flex-col items-center md:items-start w-full md:w-2/3 shadow-lg rounded-xl max-w-full" // Reduced mobile border thickness, added max-w-full
-        >
-          {/* Title */}
-          <motion.h2 
-            variants={isMobile ? mobileItemVariants : undefined}
-            className="text-3xl md:text-5xl font-extrabold mb-4 md:mb-6 text-[#F8ECE4] text-center md:text-left"
-          >
-            About
-          </motion.h2>
-          
-          {/* Description */}
-          <motion.p 
-            variants={isMobile ? mobileItemVariants : undefined}
-            className="text-sm md:text-xl leading-relaxed text-center md:text-left mb-4 md:mb-0 max-w-full overflow-wrap-anywhere" // Added text overflow handling
-          >
-            I&apos;m a full-stack web developer with specialization in <span className="font-semibold text-[#FFF7D6]">React, Node.js, API integration, SQL,</span> and cloud services,
-            building efficient and engaging web applications. I&apos;ve completed <span className="font-semibold text-[#FFF7D6]">100+ hours</span> of hands-on IT training,
-            and worked on projects like <span className="font-semibold text-[#FFF7D6]">CaseClicker.online</span> and <span className="font-semibold text-[#FFF7D6]">Pollution Zero</span> — the latter took <span className="font-semibold text-[#FFF7D6]">1st Place at FireHacks Fall 2024</span>.
-          </motion.p>
-          
-          <motion.p 
-            variants={isMobile ? mobileItemVariants : undefined}
-            className="text-sm md:text-xl leading-relaxed mt-3 md:mt-6 text-center md:text-left max-w-full overflow-wrap-anywhere" // Added text overflow handling
-          >
-            Alongside development, I bring experience in project management, UI/UX design, video editing, and digital marketing — combining technical skills with a product-focused mindset to deliver practical, user-centered solutions.
-            <span className="block mt-2 font-semibold text-[#FFF7D6]">Open to web development opportunities!</span>
-          </motion.p>
-        </motion.div>
-
-        {/* Right: Animated Years of Experience */}
-        <motion.div
-          ref={counterRef}
-          variants={isMobile ? mobileItemVariants : undefined}
-          className="flex flex-col justify-center items-center p-4 md:p-10 rounded-xl w-full md:w-1/3 min-h-[160px] md:min-h-auto max-w-full" // Reduced mobile padding, added max-w-full
-        >
-          <motion.h3 
-            variants={isMobile ? mobileItemVariants : undefined}
-            className="text-xl md:text-4xl font-bold text-[#FFF7D6] mb-3 md:mb-4 text-center"
-          >
-            Experience
-          </motion.h3>
+    <div className="w-full overflow-hidden"> {/* Container to prevent overflow */}
+      <motion.section
+        ref={ref}
+        style={!isMobile ? { x } : {}} // Only apply x transform on desktop
+        id="section-2"
+        className="w-full text-[#F8ECE4] px-4 md:p-12 mt-8 md:mt-14 min-w-full" // Ensure full width on mobile
+        initial={isMobile ? "hidden" : undefined}
+        whileInView={isMobile ? "visible" : undefined}
+        viewport={isMobile ? { once: true, margin: "-10%" } : undefined}
+        variants={isMobile ? mobileVariants : undefined}
+      >
+        <div className="flex flex-col md:flex-row justify-between items-stretch gap-4 md:gap-10 w-full"> {/* Ensure full width */}
+          {/* Left: About Section */}
           <motion.div
-            className="text-center"
+            initial={isMobile ? undefined : { opacity: 0, y: 50 }}
+            animate={isMobile ? undefined : { opacity: 1, y: 0 }}
+            transition={isMobile ? undefined : { duration: 0.8, ease: "easeOut" }}
             variants={isMobile ? mobileItemVariants : undefined}
-            whileInView={isMobile ? { scale: [1, 1.05, 1] } : undefined}
-            transition={isMobile ? { duration: 0.5, delay: 0.8 } : undefined}
+            className="relative border-t border-l border-[#FFF7D6] border-b-2 md:border-b-[10px] border-r-2 md:border-r-[10px] border-[#FFF7D6] p-4 md:p-10 flex flex-col items-center md:items-start w-full md:w-2/3 shadow-lg rounded-xl"
           >
-            <motion.span
-              className="text-4xl md:text-6xl font-extrabold text-[#F8ECE4] block"
-              style={{ scale: isMobile ? 1 : 1.1 }}
+            {/* Title */}
+            <motion.h2 
+              variants={isMobile ? mobileItemVariants : undefined}
+              className="text-3xl md:text-5xl font-extrabold mb-4 md:mb-6 text-[#F8ECE4] text-center md:text-left"
             >
-              {displayCount}
-            </motion.span>
-            <span className="text-lg md:text-2xl text-[#FFF7D6] font-medium">years</span>
+              About
+            </motion.h2>
+            
+            {/* Description */}
+            <motion.p 
+              variants={isMobile ? mobileItemVariants : undefined}
+              className="text-sm md:text-xl leading-relaxed text-center md:text-left mb-4 md:mb-0 break-words hyphens-auto"
+            >
+              I&apos;m a full-stack web developer with specialization in <span className="font-semibold text-[#FFF7D6]">React, Node.js, API integration, SQL,</span> and cloud services,
+              building efficient and engaging web applications. I&apos;ve completed <span className="font-semibold text-[#FFF7D6]">100+ hours</span> of hands-on IT training,
+              and worked on projects like <span className="font-semibold text-[#FFF7D6]">CaseClicker.online</span> and <span className="font-semibold text-[#FFF7D6]">Pollution Zero</span> — the latter took <span className="font-semibold text-[#FFF7D6]">1st Place at FireHacks Fall 2024</span>.
+            </motion.p>
+            
+            <motion.p 
+              variants={isMobile ? mobileItemVariants : undefined}
+              className="text-sm md:text-xl leading-relaxed mt-3 md:mt-6 text-center md:text-left break-words hyphens-auto"
+            >
+              Alongside development, I bring experience in project management, UI/UX design, video editing, and digital marketing — combining technical skills with a product-focused mindset to deliver practical, user-centered solutions.
+              <span className="block mt-2 font-semibold text-[#FFF7D6]">Open to web development opportunities!</span>
+            </motion.p>
           </motion.div>
-        </motion.div>
-      </div>
-    </motion.section>
+
+          {/* Right: Animated Years of Experience */}
+          <motion.div
+            ref={counterRef}
+            variants={isMobile ? mobileItemVariants : undefined}
+            className="flex flex-col justify-center items-center p-4 md:p-10 rounded-xl w-full md:w-1/3 min-h-[160px] md:min-h-auto"
+          >
+            <motion.h3 
+              variants={isMobile ? mobileItemVariants : undefined}
+              className="text-xl md:text-4xl font-bold text-[#FFF7D6] mb-3 md:mb-4 text-center"
+            >
+              Experience
+            </motion.h3>
+            <motion.div
+              className="text-center"
+              variants={isMobile ? mobileItemVariants : undefined}
+              whileInView={isMobile ? { scale: [1, 1.05, 1] } : undefined}
+              transition={isMobile ? { duration: 0.5, delay: 0.8 } : undefined}
+            >
+              <motion.span
+                className="text-4xl md:text-6xl font-extrabold text-[#F8ECE4] block"
+                style={{ scale: isMobile ? 1 : 1.1 }}
+              >
+                {displayCount}
+              </motion.span>
+              <span className="text-lg md:text-2xl text-[#FFF7D6] font-medium">years</span>
+            </motion.div>
+          </motion.div>
+        </div>
+      </motion.section>
+    </div>
   );
 };
 
