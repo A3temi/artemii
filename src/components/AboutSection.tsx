@@ -6,7 +6,7 @@ const AboutSection = () => {
   const ref = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
   
-  // Check if device is mobile and add viewport meta tag
+  // Check if device is mobile
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -15,52 +15,8 @@ const AboutSection = () => {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     
-    // Add/update viewport meta tag to prevent zooming on mobile
-    let viewportMeta = document.querySelector('meta[name="viewport"]');
-    if (!viewportMeta) {
-      viewportMeta = document.createElement('meta');
-      viewportMeta.name = 'viewport';
-      document.head.appendChild(viewportMeta);
-    }
-    
-    // Set viewport to prevent zooming
-    viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
-    
-    return () => {
-      window.removeEventListener('resize', checkMobile);
-      // Optional: restore original viewport on cleanup (if needed)
-      // viewportMeta.content = 'width=device-width, initial-scale=1.0';
-    };
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
-  // Prevent pinch-to-zoom gesture on mobile
-  useEffect(() => {
-    if (isMobile) {
-      const preventDefault = (e) => {
-        if (e.touches && e.touches.length > 1) {
-          e.preventDefault();
-        }
-      };
-
-      const preventZoom = (e) => {
-        if (e.ctrlKey || e.metaKey) {
-          e.preventDefault();
-        }
-      };
-
-      document.addEventListener('touchstart', preventDefault, { passive: false });
-      document.addEventListener('touchmove', preventDefault, { passive: false });
-      document.addEventListener('wheel', preventZoom, { passive: false });
-      document.addEventListener('keydown', preventZoom);
-
-      return () => {
-        document.removeEventListener('touchstart', preventDefault);
-        document.removeEventListener('touchmove', preventDefault);
-        document.removeEventListener('wheel', preventZoom);
-        document.removeEventListener('keydown', preventZoom);
-      };
-    }
-  }, [isMobile]);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -71,7 +27,7 @@ const AboutSection = () => {
   const rawX = useTransform(
     scrollYProgress, 
     [0, 0.3, 1], 
-    ["calc(100vw - 100%)", "0vw", "0vw"]
+    isMobile ? ["0vw", "0vw", "0vw"] : ["calc(100vw - 100%)", "0vw", "0vw"]
   );
   const x = useSpring(rawX, { stiffness: 500, damping: 200 });
 
@@ -94,14 +50,14 @@ const AboutSection = () => {
     }
   }, [isInView, count, animatedCount]);
 
-  // Mobile-specific animations - slide in from right
+  // Mobile-specific animations
   const mobileVariants = {
-    hidden: { opacity: 0, x: "100%" },
+    hidden: { opacity: 0, y: 30 },
     visible: { 
       opacity: 1, 
-      x: 0,
+      y: 0,
       transition: { 
-        duration: 0.8, 
+        duration: 0.6, 
         ease: "easeOut",
         staggerChildren: 0.2
       }
@@ -109,92 +65,90 @@ const AboutSection = () => {
   };
 
   const mobileItemVariants = {
-    hidden: { opacity: 0, x: 30 },
+    hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
-      x: 0,
-      transition: { duration: 0.5, ease: "easeOut" }
+      y: 0,
+      transition: { duration: 0.4, ease: "easeOut" }
     }
   };
 
   return (
-    <div className="w-full overflow-hidden"> {/* Container to hide overflow on mobile */}
-      <motion.section
-        ref={ref}
-        style={!isMobile ? { x } : {}} // Only apply x transform on desktop
-        id="section-2"
-        className="w-full text-[#F8ECE4] px-4 md:p-12 mt-8 md:mt-14"
-        initial={isMobile ? "hidden" : undefined}
-        whileInView={isMobile ? "visible" : undefined}
-        viewport={isMobile ? { once: true, margin: "-10%" } : undefined}
-        variants={isMobile ? mobileVariants : undefined}
-      >
-        <div className="flex flex-col md:flex-row justify-between items-stretch gap-4 md:gap-10 max-w-full">
-          {/* Left: About Section */}
-          <motion.div
-            initial={isMobile ? undefined : { opacity: 0, y: 50 }}
-            animate={isMobile ? undefined : { opacity: 1, y: 0 }}
-            transition={isMobile ? undefined : { duration: 0.8, ease: "easeOut" }}
+    <motion.section
+      ref={ref}
+      style={{ x: isMobile ? 0 : x }}
+      id="section-2"
+      className="w-full text-[#F8ECE4] px-4 md:p-12 mt-8 md:mt-14"
+      initial={isMobile ? "hidden" : undefined}
+      whileInView={isMobile ? "visible" : undefined}
+      viewport={isMobile ? { once: true, margin: "-10%" } : undefined}
+      variants={isMobile ? mobileVariants : undefined}
+    >
+      <div className="flex flex-col md:flex-row justify-between items-stretch gap-4 md:gap-10">
+        {/* Left: About Section */}
+        <motion.div
+          initial={isMobile ? undefined : { opacity: 0, y: 50 }}
+          animate={isMobile ? undefined : { opacity: 1, y: 0 }}
+          transition={isMobile ? undefined : { duration: 0.8, ease: "easeOut" }}
+          variants={isMobile ? mobileItemVariants : undefined}
+          className="relative border-t border-l border-[#FFF7D6] border-b-4 md:border-b-[10px] border-r-4 md:border-r-[10px] border-[#FFF7D6] p-6 md:p-10 flex flex-col items-center md:items-start w-full md:w-2/3 shadow-lg rounded-xl"
+        >
+          {/* Title */}
+          <motion.h2 
             variants={isMobile ? mobileItemVariants : undefined}
-            className="relative border-t border-l border-[#FFF7D6] border-b-2 md:border-b-[10px] border-r-2 md:border-r-[10px] border-[#FFF7D6] p-4 md:p-10 flex flex-col items-center md:items-start w-full md:w-2/3 shadow-lg rounded-xl max-w-full"
+            className="text-3xl md:text-5xl font-extrabold mb-4 md:mb-6 text-[#F8ECE4] text-center md:text-left"
           >
-            {/* Title */}
-            <motion.h2 
-              variants={isMobile ? mobileItemVariants : undefined}
-              className="text-3xl md:text-5xl font-extrabold mb-4 md:mb-6 text-[#F8ECE4] text-center md:text-left"
-            >
-              About
-            </motion.h2>
-            
-            {/* Description */}
-            <motion.p 
-              variants={isMobile ? mobileItemVariants : undefined}
-              className="text-sm md:text-xl leading-relaxed text-center md:text-left mb-4 md:mb-0 max-w-full overflow-wrap-anywhere"
-            >
-              I&apos;m a full-stack web developer with specialization in <span className="font-semibold text-[#FFF7D6]">React, Node.js, API integration, SQL,</span> and cloud services,
-              building efficient and engaging web applications. I&apos;ve completed <span className="font-semibold text-[#FFF7D6]">100+ hours</span> of hands-on IT training,
-              and worked on projects like <span className="font-semibold text-[#FFF7D6]">CaseClicker.online</span> and <span className="font-semibold text-[#FFF7D6]">Pollution Zero</span> — the latter took <span className="font-semibold text-[#FFF7D6]">1st Place at FireHacks Fall 2024</span>.
-            </motion.p>
-            
-            <motion.p 
-              variants={isMobile ? mobileItemVariants : undefined}
-              className="text-sm md:text-xl leading-relaxed mt-3 md:mt-6 text-center md:text-left max-w-full overflow-wrap-anywhere"
-            >
-              Alongside development, I bring experience in project management, UI/UX design, video editing, and digital marketing — combining technical skills with a product-focused mindset to deliver practical, user-centered solutions.
-              <span className="block mt-2 font-semibold text-[#FFF7D6]">Open to web development opportunities!</span>
-            </motion.p>
-          </motion.div>
+            About
+          </motion.h2>
+          
+          {/* Description */}
+          <motion.p 
+            variants={isMobile ? mobileItemVariants : undefined}
+            className="text-sm md:text-xl leading-relaxed text-center md:text-left mb-4 md:mb-0"
+          >
+            I&apos;m a full-stack web developer with specialization in <span className="font-semibold text-[#FFF7D6]">React, Node.js, API integration, SQL,</span> and cloud services,
+            building efficient and engaging web applications. I&apos;ve completed <span className="font-semibold text-[#FFF7D6]">100+ hours</span> of hands-on IT training,
+            and worked on projects like <span className="font-semibold text-[#FFF7D6]">CaseClicker.online</span> and <span className="font-semibold text-[#FFF7D6]">Pollution Zero</span> — the latter took <span className="font-semibold text-[#FFF7D6]">1st Place at FireHacks Fall 2024</span>.
+          </motion.p>
+          
+          <motion.p 
+            variants={isMobile ? mobileItemVariants : undefined}
+            className="text-sm md:text-xl leading-relaxed mt-3 md:mt-6 text-center md:text-left"
+          >
+            Alongside development, I bring experience in project management, UI/UX design, video editing, and digital marketing — combining technical skills with a product-focused mindset to deliver practical, user-centered solutions.
+            <span className="block mt-2 font-semibold text-[#FFF7D6]">Open to web development opportunities!</span>
+          </motion.p>
+        </motion.div>
 
-          {/* Right: Animated Years of Experience */}
-          <motion.div
-            ref={counterRef}
+        {/* Right: Animated Years of Experience */}
+        <motion.div
+          ref={counterRef}
+          variants={isMobile ? mobileItemVariants : undefined}
+          className="flex flex-col justify-center items-center p-6 md:p-10 rounded-xl w-full md:w-1/3 min-h-[160px] md:min-h-auto"
+        >
+          <motion.h3 
             variants={isMobile ? mobileItemVariants : undefined}
-            className="flex flex-col justify-center items-center p-4 md:p-10 rounded-xl w-full md:w-1/3 min-h-[160px] md:min-h-auto max-w-full"
+            className="text-xl md:text-4xl font-bold text-[#FFF7D6] mb-3 md:mb-4 text-center"
           >
-            <motion.h3 
-              variants={isMobile ? mobileItemVariants : undefined}
-              className="text-xl md:text-4xl font-bold text-[#FFF7D6] mb-3 md:mb-4 text-center"
+            Experience
+          </motion.h3>
+          <motion.div
+            className="text-center"
+            variants={isMobile ? mobileItemVariants : undefined}
+            whileInView={isMobile ? { scale: [1, 1.05, 1] } : undefined}
+            transition={isMobile ? { duration: 0.5, delay: 0.8 } : undefined}
+          >
+            <motion.span
+              className="text-4xl md:text-6xl font-extrabold text-[#F8ECE4] block"
+              style={{ scale: isMobile ? 1 : 1.1 }}
             >
-              Experience
-            </motion.h3>
-            <motion.div
-              className="text-center"
-              variants={isMobile ? mobileItemVariants : undefined}
-              whileInView={isMobile ? { scale: [1, 1.05, 1] } : undefined}
-              transition={isMobile ? { duration: 0.5, delay: 0.8 } : undefined}
-            >
-              <motion.span
-                className="text-4xl md:text-6xl font-extrabold text-[#F8ECE4] block"
-                style={{ scale: isMobile ? 1 : 1.1 }}
-              >
-                {displayCount}
-              </motion.span>
-              <span className="text-lg md:text-2xl text-[#FFF7D6] font-medium">years</span>
-            </motion.div>
+              {displayCount}
+            </motion.span>
+            <span className="text-lg md:text-2xl text-[#FFF7D6] font-medium">years</span>
           </motion.div>
-        </div>
-      </motion.section>
-    </div>
+        </motion.div>
+      </div>
+    </motion.section>
   );
 };
 
