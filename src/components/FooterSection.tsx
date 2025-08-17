@@ -65,20 +65,6 @@ const FooterSection = () => {
         />
       </div>
 
-      {/* Geometric decorative elements */}
-      <motion.div
-        initial={{ opacity: 0, rotate: -45 }}
-        animate={isInView ? { opacity: 0.05, rotate: 0 } : {}}
-        transition={{ duration: 3, delay: 1 }}
-        className="absolute top-1/4 left-1/4 w-32 h-32 border border-[#F8ECE4] rotate-45"
-      />
-      <motion.div
-        initial={{ opacity: 0, rotate: 45 }}
-        animate={isInView ? { opacity: 0.03, rotate: 0 } : {}}
-        transition={{ duration: 3.5, delay: 1.2 }}
-        className="absolute bottom-1/3 right-1/3 w-24 h-24 border-2 border-[#F8ECE4] rounded-full"
-      />
-
       {/* Main content container */}
       <div className="relative z-10 max-w-4xl mx-auto px-8 text-center">
         {/* Decorative top line */}
