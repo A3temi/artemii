@@ -123,7 +123,7 @@ const FooterSection = () => {
           transition={{ duration: 1, delay: 1.5 }}
           className="text-lg md:text-xl text-[#F8ECE4]/80 font-light tracking-wide max-w-2xl mx-auto leading-relaxed"
         >
-          Crafting meaningful experiences that bridge the gap between ambition and achievement
+          Transforming vision into reality through strategic innovation and thoughtful execution
         </motion.p>
 
         {/* Call-to-action or contact info */}

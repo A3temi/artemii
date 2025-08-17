@@ -6,48 +6,63 @@ import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 
 const projects = [
-    {
+  {
+    "title": "Global Cars – Car Dealership Website",
+    "duration": "May 2025 - Jul 2025 · 3 mos",
+    "description": "Global Cars is a Nizhny Novgorod–based dealership specializing in buying, selling, and importing used cars from the USA and Europe. For their website I performed competitor analysis, designed a new logo and UI/UX, built an inventory dashboard, implemented a Prisma-powered database with server-side image storage, optimized the site for SEO, and deployed the production site to a VPS. Delivered features include the Main Page and a searchable Car Catalogue.",
+    "links": ["https://global-cars.ru"],
+    "skills": ["Next.js", "Prisma", "Database Design", "SEO", "UI/UX", "Deployment"],
+    "images": ["/projects/globalcars1.png", "/projects/globalcars2.png"]
+  },
+  {
+    "title": "StartupSeed – Platform for Startups and Investors",
+    "duration": "May 2025 - Jul 2025 · 3 mos",
+    "description": "StartupSeed is a concept platform connecting startup founders and investors across Malaysia. I built the prototype frontend and core flows: public and private startup listings, investor discovery and filtering, a Business Model Canvas tool, a business-analyzer page, and a basic secondary-market concept for early exits. Focus was on founder-first UX, efficient discovery, and low-fee monetization model to encourage adoption.",
+    "links": ["https://startupseedmy.netlify.app"],
+    "skills": ["Next.js", "React.js", "Product Design", "Startup Strategy", "Search & Filtering", "Project Management"],
+    "images": ["/projects/startupseed1.png", "/projects/startupseed2.png"]
+  },
+  {
     "title": "CollabCode – Winner at The Dev Challenge",
     "duration": "Jan 2025 - Feb 2025 · 2 mos",
     "description": "Developed CollabCode, a real-time, browser-based coding platform that secured a winning position at The Dev Challenge, standing out among 203 projects for its impact on coding education. Engineered live coding sessions, classroom management tools, peer collaboration features, and gamified progress tracking. Built a scalable, secure system that allows seamless interaction with zero local setup, enhancing accessibility for students and educators worldwide.",
     "links": ["https://devpost.com/software/collabcode", "https://collabcode-vob8.onrender.com"],
     "skills": ["React.js", "Node.js", "WebSockets", "Python", "Express.js", "Database Management"],
     "images": ["/projects/collabcode1.png", "/projects/collabcode2.png", "/projects/collabcode3.png"]
-    },
-    {
-      "title": "A3t Team Website – Frontend Developer",
-      "duration": "Jan 2025 · 1 mo",
-      "description": "Designed and developed an interactive, visually engaging website for A3t, showcasing team projects, hackathon participation, and business collaborations. Implemented dynamic themes inspired by popular games and ensured seamless performance across devices.",
-      "links": ["https://a3t.netlify.app"],
-      "skills": ["React.js", "Web Design", "UI/UX Development", "Frontend Optimization"],
-      "images": ["/projects/a3t1.png", "/projects/a3t2.png", "/projects/a3t3.png", "/projects/a3t4.png"]
-    },
-    {
-      "title": "Turn of Life – Multiplayer Game Developer",
-      "duration": "Dec 2024 - Jan 2025 · 2 mos",
-      "description": "Developed Turn of Life, a real-time multiplayer party game blending Monopoly, The Game of Life, and Jackbox elements. Engineered live gameplay, dynamic board mechanics, and interactive mini-games. Implemented WebSocket-based communication for seamless player interactions.",
-      "links": ["https://devpost.com/software/turn-of-life"],
-      "skills": ["React.js", "Node.js", "Socket.io", "Express.js", "Game Development"],
-      "images": ["/projects/turnoflife1.png"]
-    },
-    {
-      "title": "Telegram Scraper AI – AI Engineer & Developer",
-      "duration": "Dec 2024 · 1 mo",
-      "description": "Developed Telegram Scraper AI, an advanced tool leveraging OpenAI and Telethon to extract and analyze chat data securely. Integrated AI-driven insights for travel planning, financial safety, and community monitoring with multilingual support.",
-      "links": ["https://devpost.com/software/telegram-scraper-ai", "https://telegramscraperai.onrender.com"],
-      "skills": ["React.js", "Node.js", "OpenAI API", "Python", "Telethon", "Data Analysis"],
-      "images": ["/projects/telegramscraper1.png", "/projects/telegramscraper2.png", "/projects/telegramscraper3.png", "/projects/telegramscraper4.png"]
-    },
-    {
-      "title": "Pollution Zero – Hackathon Winner (1st Place)",
-      "duration": "Nov 2024 - Dec 2024 · 1 mo",
-      "description": "Built Pollution Zero, an award-winning web-based simulation game tackling environmental challenges. Implemented AI-driven analytics, real-world environmental problem-solving, and interactive mapping. Achieved 1st place in FireHacks Fall 2024 for innovation and impact.",
-      "links": ["https://devpost.com/software/pollution-zero"],
-      "skills": ["JavaScript", "React.js", "Node.js", "GeoJSON/Leaflet.js", "Machine Learning Integration"],
-      "images": ["/projects/pollutionzero1.png", "/projects/pollutionzero2.png", "/projects/pollutionzero3.png"]
-    }
-  ];
-  
+  },
+  {
+    "title": "A3t Team Website – Frontend Developer",
+    "duration": "Jan 2025 · 1 mo",
+    "description": "Designed and developed an interactive, visually engaging website for A3t, showcasing team projects, hackathon participation, and business collaborations. Implemented dynamic themes inspired by popular games and ensured seamless performance across devices.",
+    "links": ["https://a3t.netlify.app"],
+    "skills": ["React.js", "Web Design", "UI/UX Development", "Frontend Optimization"],
+    "images": ["/projects/a3t1.png", "/projects/a3t2.png", "/projects/a3t3.png", "/projects/a3t4.png"]
+  },
+  {
+    "title": "Turn of Life – Multiplayer Game Developer",
+    "duration": "Dec 2024 - Jan 2025 · 2 mos",
+    "description": "Developed Turn of Life, a real-time multiplayer party game blending Monopoly, The Game of Life, and Jackbox elements. Engineered live gameplay, dynamic board mechanics, and interactive mini-games. Implemented WebSocket-based communication for seamless player interactions.",
+    "links": ["https://devpost.com/software/turn-of-life"],
+    "skills": ["React.js", "Node.js", "Socket.io", "Express.js", "Game Development"],
+    "images": ["/projects/turnoflife1.png"]
+  },
+  {
+    "title": "Telegram Scraper AI – AI Engineer & Developer",
+    "duration": "Dec 2024 · 1 mo",
+    "description": "Developed Telegram Scraper AI, an advanced tool leveraging OpenAI and Telethon to extract and analyze chat data securely. Integrated AI-driven insights for travel planning, financial safety, and community monitoring with multilingual support.",
+    "links": ["https://devpost.com/software/telegram-scraper-ai", "https://telegramscraperai.onrender.com"],
+    "skills": ["React.js", "Node.js", "OpenAI API", "Python", "Telethon", "Data Analysis"],
+    "images": ["/projects/telegramscraper1.png", "/projects/telegramscraper2.png", "/projects/telegramscraper3.png", "/projects/telegramscraper4.png"]
+  },
+  {
+    "title": "Pollution Zero – Hackathon Winner (1st Place)",
+    "duration": "Nov 2024 - Dec 2024 · 1 mo",
+    "description": "Built Pollution Zero, an award-winning web-based simulation game tackling environmental challenges. Implemented AI-driven analytics, real-world environmental problem-solving, and interactive mapping. Achieved 1st place in FireHacks Fall 2024 for innovation and impact.",
+    "links": ["https://devpost.com/software/pollution-zero"],
+    "skills": ["JavaScript", "React.js", "Node.js", "GeoJSON/Leaflet.js", "Machine Learning Integration"],
+    "images": ["/projects/pollutionzero1.png", "/projects/pollutionzero2.png", "/projects/pollutionzero3.png"]
+  }
+];
 
 const ProjectsSection = () => {
   const [selectedProj, setSelectedProj] = useState(projects[0]);

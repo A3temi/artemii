@@ -191,7 +191,7 @@ const HeroSection = () => {
               { label: "Location", value: "Greater Kuala Lumpur, Malaysia" },
               { label: "LinkedIn", value: "https://www.linkedin.com/in/a3temii", isLink: true },
               { label: "Languages", value: "English / Russian" },
-              { label: "Total experience", value: "1.4 years" },
+              { label: "Total experience", value: "2.3 years" },
               { label: "Education", value: "Current UCSI Computer Science Data Science Student" }
             ].map((info, index) => (
               <p key={index}>
