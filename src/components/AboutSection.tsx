@@ -27,7 +27,7 @@ const AboutSection = () => {
   const rawX = useTransform(
     scrollYProgress, 
     [0, 0.3, 1], 
-    isMobile ? ["0vw", "0vw", "0vw"] : ["calc(100vw - 100%)", "0vw", "0vw"]
+    ["calc(100vw - 100%)", "0vw", "0vw"]
   );
   const x = useSpring(rawX, { stiffness: 500, damping: 200 });
 
@@ -76,22 +76,22 @@ const AboutSection = () => {
   return (
     <motion.section
       ref={ref}
-      style={{ x: isMobile ? 0 : x }}
+      style={!isMobile ? { x } : {}} // Only apply x transform on desktop
       id="section-2"
-      className="w-full text-[#F8ECE4] px-4 md:p-12 mt-8 md:mt-14"
+      className="w-full text-[#F8ECE4] px-4 md:p-12 mt-8 md:mt-14 overflow-hidden" // Added overflow-hidden
       initial={isMobile ? "hidden" : undefined}
       whileInView={isMobile ? "visible" : undefined}
       viewport={isMobile ? { once: true, margin: "-10%" } : undefined}
       variants={isMobile ? mobileVariants : undefined}
     >
-      <div className="flex flex-col md:flex-row justify-between items-stretch gap-4 md:gap-10">
+      <div className="flex flex-col md:flex-row justify-between items-stretch gap-4 md:gap-10 max-w-full"> {/* Added max-w-full */}
         {/* Left: About Section */}
         <motion.div
           initial={isMobile ? undefined : { opacity: 0, y: 50 }}
           animate={isMobile ? undefined : { opacity: 1, y: 0 }}
           transition={isMobile ? undefined : { duration: 0.8, ease: "easeOut" }}
           variants={isMobile ? mobileItemVariants : undefined}
-          className="relative border-t border-l border-[#FFF7D6] border-b-4 md:border-b-[10px] border-r-4 md:border-r-[10px] border-[#FFF7D6] p-6 md:p-10 flex flex-col items-center md:items-start w-full md:w-2/3 shadow-lg rounded-xl"
+          className="relative border-t border-l border-[#FFF7D6] border-b-2 md:border-b-[10px] border-r-2 md:border-r-[10px] border-[#FFF7D6] p-4 md:p-10 flex flex-col items-center md:items-start w-full md:w-2/3 shadow-lg rounded-xl max-w-full" // Reduced mobile border thickness, added max-w-full
         >
           {/* Title */}
           <motion.h2 
@@ -104,7 +104,7 @@ const AboutSection = () => {
           {/* Description */}
           <motion.p 
             variants={isMobile ? mobileItemVariants : undefined}
-            className="text-sm md:text-xl leading-relaxed text-center md:text-left mb-4 md:mb-0"
+            className="text-sm md:text-xl leading-relaxed text-center md:text-left mb-4 md:mb-0 max-w-full overflow-wrap-anywhere" // Added text overflow handling
           >
             I&apos;m a full-stack web developer with specialization in <span className="font-semibold text-[#FFF7D6]">React, Node.js, API integration, SQL,</span> and cloud services,
             building efficient and engaging web applications. I&apos;ve completed <span className="font-semibold text-[#FFF7D6]">100+ hours</span> of hands-on IT training,
@@ -113,7 +113,7 @@ const AboutSection = () => {
           
           <motion.p 
             variants={isMobile ? mobileItemVariants : undefined}
-            className="text-sm md:text-xl leading-relaxed mt-3 md:mt-6 text-center md:text-left"
+            className="text-sm md:text-xl leading-relaxed mt-3 md:mt-6 text-center md:text-left max-w-full overflow-wrap-anywhere" // Added text overflow handling
           >
             Alongside development, I bring experience in project management, UI/UX design, video editing, and digital marketing — combining technical skills with a product-focused mindset to deliver practical, user-centered solutions.
             <span className="block mt-2 font-semibold text-[#FFF7D6]">Open to web development opportunities!</span>
@@ -124,7 +124,7 @@ const AboutSection = () => {
         <motion.div
           ref={counterRef}
           variants={isMobile ? mobileItemVariants : undefined}
-          className="flex flex-col justify-center items-center p-6 md:p-10 rounded-xl w-full md:w-1/3 min-h-[160px] md:min-h-auto"
+          className="flex flex-col justify-center items-center p-4 md:p-10 rounded-xl w-full md:w-1/3 min-h-[160px] md:min-h-auto max-w-full" // Reduced mobile padding, added max-w-full
         >
           <motion.h3 
             variants={isMobile ? mobileItemVariants : undefined}
