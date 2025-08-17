@@ -6,7 +6,7 @@ const AboutSection = () => {
   const ref = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
   
-  // Check if device is mobile
+  // Check if device is mobile and add viewport meta tag
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -15,35 +15,49 @@ const AboutSection = () => {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     
-    return () => window.removeEventListener('resize', checkMobile);
+    // Add/update viewport meta tag to prevent zooming on mobile
+    let viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (!viewportMeta) {
+      viewportMeta = document.createElement('meta');
+      viewportMeta.name = 'viewport';
+      document.head.appendChild(viewportMeta);
+    }
+    
+    // Set viewport to prevent zooming
+    viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      // Optional: restore original viewport on cleanup (if needed)
+      // viewportMeta.content = 'width=device-width, initial-scale=1.0';
+    };
   }, []);
 
-  // Prevent zoom and horizontal scroll on mobile
+  // Prevent pinch-to-zoom gesture on mobile
   useEffect(() => {
     if (isMobile) {
-      // Disable zoom and horizontal scroll on mobile
-      const viewport = document.querySelector('meta[name="viewport"]');
-      if (viewport) {
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-      } else {
-        const newViewport = document.createElement('meta');
-        newViewport.name = 'viewport';
-        newViewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-        document.head.appendChild(newViewport);
-      }
-
-      // Prevent horizontal overflow on body
-      document.body.style.overflowX = 'hidden';
-      document.documentElement.style.overflowX = 'hidden';
-      
-      return () => {
-        // Restore original viewport settings
-        const viewport = document.querySelector('meta[name="viewport"]');
-        if (viewport) {
-          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+      const preventDefault = (e) => {
+        if (e.touches && e.touches.length > 1) {
+          e.preventDefault();
         }
-        document.body.style.overflowX = '';
-        document.documentElement.style.overflowX = '';
+      };
+
+      const preventZoom = (e) => {
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+        }
+      };
+
+      document.addEventListener('touchstart', preventDefault, { passive: false });
+      document.addEventListener('touchmove', preventDefault, { passive: false });
+      document.addEventListener('wheel', preventZoom, { passive: false });
+      document.addEventListener('keydown', preventZoom);
+
+      return () => {
+        document.removeEventListener('touchstart', preventDefault);
+        document.removeEventListener('touchmove', preventDefault);
+        document.removeEventListener('wheel', preventZoom);
+        document.removeEventListener('keydown', preventZoom);
       };
     }
   }, [isMobile]);
@@ -80,14 +94,14 @@ const AboutSection = () => {
     }
   }, [isInView, count, animatedCount]);
 
-  // Mobile-specific animations
+  // Mobile-specific animations - slide in from right
   const mobileVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, x: "100%" },
     visible: { 
       opacity: 1, 
-      y: 0,
+      x: 0,
       transition: { 
-        duration: 0.6, 
+        duration: 0.8, 
         ease: "easeOut",
         staggerChildren: 0.2
       }
@@ -95,34 +109,34 @@ const AboutSection = () => {
   };
 
   const mobileItemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, x: 30 },
     visible: { 
       opacity: 1, 
-      y: 0,
-      transition: { duration: 0.4, ease: "easeOut" }
+      x: 0,
+      transition: { duration: 0.5, ease: "easeOut" }
     }
   };
 
   return (
-    <div className="w-full overflow-hidden"> {/* Container to prevent overflow */}
+    <div className="w-full overflow-hidden"> {/* Container to hide overflow on mobile */}
       <motion.section
         ref={ref}
         style={!isMobile ? { x } : {}} // Only apply x transform on desktop
         id="section-2"
-        className="w-full text-[#F8ECE4] px-4 md:p-12 mt-8 md:mt-14 min-w-full" // Ensure full width on mobile
+        className="w-full text-[#F8ECE4] px-4 md:p-12 mt-8 md:mt-14"
         initial={isMobile ? "hidden" : undefined}
         whileInView={isMobile ? "visible" : undefined}
         viewport={isMobile ? { once: true, margin: "-10%" } : undefined}
         variants={isMobile ? mobileVariants : undefined}
       >
-        <div className="flex flex-col md:flex-row justify-between items-stretch gap-4 md:gap-10 w-full"> {/* Ensure full width */}
+        <div className="flex flex-col md:flex-row justify-between items-stretch gap-4 md:gap-10 max-w-full">
           {/* Left: About Section */}
           <motion.div
             initial={isMobile ? undefined : { opacity: 0, y: 50 }}
             animate={isMobile ? undefined : { opacity: 1, y: 0 }}
             transition={isMobile ? undefined : { duration: 0.8, ease: "easeOut" }}
             variants={isMobile ? mobileItemVariants : undefined}
-            className="relative border-t border-l border-[#FFF7D6] border-b-2 md:border-b-[10px] border-r-2 md:border-r-[10px] border-[#FFF7D6] p-4 md:p-10 flex flex-col items-center md:items-start w-full md:w-2/3 shadow-lg rounded-xl"
+            className="relative border-t border-l border-[#FFF7D6] border-b-2 md:border-b-[10px] border-r-2 md:border-r-[10px] border-[#FFF7D6] p-4 md:p-10 flex flex-col items-center md:items-start w-full md:w-2/3 shadow-lg rounded-xl max-w-full"
           >
             {/* Title */}
             <motion.h2 
@@ -135,7 +149,7 @@ const AboutSection = () => {
             {/* Description */}
             <motion.p 
               variants={isMobile ? mobileItemVariants : undefined}
-              className="text-sm md:text-xl leading-relaxed text-center md:text-left mb-4 md:mb-0 break-words hyphens-auto"
+              className="text-sm md:text-xl leading-relaxed text-center md:text-left mb-4 md:mb-0 max-w-full overflow-wrap-anywhere"
             >
               I&apos;m a full-stack web developer with specialization in <span className="font-semibold text-[#FFF7D6]">React, Node.js, API integration, SQL,</span> and cloud services,
               building efficient and engaging web applications. I&apos;ve completed <span className="font-semibold text-[#FFF7D6]">100+ hours</span> of hands-on IT training,
@@ -144,7 +158,7 @@ const AboutSection = () => {
             
             <motion.p 
               variants={isMobile ? mobileItemVariants : undefined}
-              className="text-sm md:text-xl leading-relaxed mt-3 md:mt-6 text-center md:text-left break-words hyphens-auto"
+              className="text-sm md:text-xl leading-relaxed mt-3 md:mt-6 text-center md:text-left max-w-full overflow-wrap-anywhere"
             >
               Alongside development, I bring experience in project management, UI/UX design, video editing, and digital marketing — combining technical skills with a product-focused mindset to deliver practical, user-centered solutions.
               <span className="block mt-2 font-semibold text-[#FFF7D6]">Open to web development opportunities!</span>
@@ -155,7 +169,7 @@ const AboutSection = () => {
           <motion.div
             ref={counterRef}
             variants={isMobile ? mobileItemVariants : undefined}
-            className="flex flex-col justify-center items-center p-4 md:p-10 rounded-xl w-full md:w-1/3 min-h-[160px] md:min-h-auto"
+            className="flex flex-col justify-center items-center p-4 md:p-10 rounded-xl w-full md:w-1/3 min-h-[160px] md:min-h-auto max-w-full"
           >
             <motion.h3 
               variants={isMobile ? mobileItemVariants : undefined}
