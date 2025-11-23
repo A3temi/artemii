@@ -1,0 +1,226 @@
+{
+    "resume": {
+    "name": "Artemii Bakharev",
+    "title": "Full-Stack Web Developer / Founder",
+    "location": "Greater Kuala Lumpur, Malaysia",
+    "linkedin": "https://www.linkedin.com/in/a3temii",
+    "email": "artemii.bakharev@example.com",
+    "languages": "English / Russian",
+    "profileImage": "/profile.webp",
+    "education": {
+      "institution": "UCSI University",
+      "degree": "Bachelor of Computer Science - Data Science",
+      "duration": "February 2025 - Present"
+    },
+    "skills": {
+      "technical": [
+        "React.js",
+        "Next.js",
+        "Node.js",
+        "Express.js",
+        "JavaScript/TypeScript",
+        "Python",
+        "SQL & Database Design",
+        "API Integration",
+        "Cloud Computing (Google Cloud)",
+        "WebSockets",
+        "Git & Version Control",
+        "SEO Optimization",
+        "UI/UX Design",
+        "Figma"
+      ],
+      "soft": [
+        "Problem Solving",
+        "Project Management",
+        "Team Collaboration",
+        "Communication",
+        "Adaptability",
+        "Time Management"
+      ]
+    }
+  },
+  "about": {
+    "title": "About",
+    "experienceYears": 2.3,
+    "paragraphs": [
+      {
+        "text": "I am a full-stack web developer with +2 years of combined experience in web development, IT support, digital creation, and entrepreneurship. My expertise includes Next.js, React, Node.js, API integration, SQL, and cloud services, with a proven track record of building and deploying high-performance web applications.",
+        "highlights": [
+          "+2 years of combined experience",
+          "React, Node.js, API integration, SQL"
+        ]
+      },
+      {
+        "text": "I've completed over 100 hours of hands-on IT training and delivered award-winning projects, such as Pollution Zero (1st Place – FireHacks Fall 2024) and CollabCode (Top 50% – The Dev Challenge). My portfolio ranges from business platforms (StartupSeed) to real-time multiplayer games (Turn of Life).",
+        "highlights": [
+          "over 100 hours of hands-on IT training",
+          "Pollution Zero",
+          "CollabCode",
+          "StartupSeed",
+          "Turn of Life"
+        ]
+      },
+      {
+        "text": "Beyond coding, I bring experience in project management, UI/UX design, video editing, and digital marketing, enabling me to deliver solutions that are both technically sound and user-focused. I'm driven by problem-solving, innovation, and creating tools that make processes more efficient and engaging.",
+        "highlights": [],
+        "footer": "📍 Open to opportunities in web development and software engineering."
+      }
+    ]
+  },
+  "achievements": [
+    {
+      "src": "/achiev/ucsi-cyber-2025.webp",
+      "desc": "3rd Runner-Up - UCSI Cyber Security Hackathon 2025",
+      "link": "https://www.linkedin.com/feed/update/urn:li:activity:7396062033865084928",
+      "title": "UCSI Cyber Security Hackathon 2025",
+      "details": "Placed 3rd Runner-Up after solving live, on-site challenges (3 hours). Gained practical cybersecurity lessons and loved the team collaboration."
+    },
+    {
+      "src": "/achiev/collab-code.webp",
+      "desc": "Top 50% - The Dev Challenge 2025",
+      "link": "https://devchallenge.devpost.com",
+      "title": "The Dev Challenge 2025",
+      "details": "Ranked in the top 50% among developers worldwide in this coding challenge."
+    },
+    {
+      "src": "/achiev/pollution-zero.webp",
+      "desc": "1st Place - FireHacks 2024",
+      "link": "https://devpost.com/software/pollution-zero",
+      "title": "FireHacks 2024 Winner",
+      "details": "Won 1st place for building Pollution Zero, an innovative environmental monitoring platform."
+    }
+  ],
+  "experiences": [
+    {
+      "id": 1,
+      "title": "CaseClicker.online",
+      "subtitle": "Full-Stack Developer",
+      "fullTitle": "CaseClicker.online – Full-Stack Developer",
+      "duration": "Aug 2024 - Nov 2024 · 4 mos",
+      "description": "Developed CaseClicker.online, a full-stack web application integrating APIs for ad management, authentication, encryption, and cloud infrastructure. Engineered a secure backend, a responsive frontend, and scalable cloud solutions to ensure a seamless user experience.",
+      "links": ["https://caseclicker.online"],
+      "skills": [
+        "Problem Solving",
+        "Cloud Computing (Google Cloud)",
+        "Database Management (SQL)",
+        "API Integration",
+        "Node.js & Backend Programming",
+        "JavaScript/React Development",
+        "React.js",
+        "Database Design"
+      ],
+      "images": ["/projects/caseclicker1.png", "/projects/caseclicker2.png"]
+    },
+    {
+      "id": 2,
+      "title": "VIP Auto Trans Inc",
+      "subtitle": "IT Assistant / HR",
+      "fullTitle": "Information Technology Assistant / HR",
+      "duration": "Jul 2023 - Aug 2023 · 2 mos",
+      "description": "Freelanced at VIP Auto Trans Inc, providing IT support and HR services. Designed digital assets, assisted with recruitment, and implemented employee benefits strategies to optimize business operations.",
+      "links": [],
+      "skills": [
+        "IT Support",
+        "HR & Recruitment",
+        "Employee Benefits Design",
+        "Digital Marketing",
+        "Graphic Design",
+        "Problem Solving"
+      ],
+      "images": []
+    },
+    {
+      "id": 3,
+      "title": "Venkon Group",
+      "subtitle": "Video Editor Intern",
+      "fullTitle": "Video Editor/Designer Intern",
+      "duration": "Jul 2022 - Aug 2022 · 2 mos",
+      "description": "Interned at Venkon Group in the IT department, working on video editing, graphic design, and digital advertising. Designed promotional materials and created a marketing video, enhancing brand outreach.",
+      "links": ["https://youtu.be/7aHk5jdRVhI"],
+      "skills": [
+        "Video Editing",
+        "Graphic Design",
+        "Web Design",
+        "Digital Advertising",
+        "Figma",
+        "Content Creation"
+      ],
+      "images": ["/projects/video_editor1.png", "/projects/video_editor2.png", "/projects/video_editor3.png"]
+    },
+    {
+      "id": 4,
+      "title": "National Children's Center",
+      "subtitle": "Medical Clerk (Volunteer)",
+      "fullTitle": "Medical Clerk (Volunteer)",
+      "duration": "Feb 2022 - Jun 2022 · 5 mos",
+      "description": "Volunteered at the National Children's Medical Center of Tashkent, assisting with patient vital signs, sterilization processes, instrument packaging, and digital record management.",
+      "links": [],
+      "skills": [
+        "Medical Data Entry",
+        "Patient Care Assistance",
+        "Sterilization & Instrument Packaging",
+        "Hospital Information Systems (HIS)",
+        "Problem Solving"
+      ],
+      "images": ["/projects/volunteer_cert1.png"]
+    }
+  ],
+  "projects": [
+    {
+      "title": "Global Cars – Car Dealership Website",
+      "duration": "May 2025 - Jul 2025 · 3 mos",
+      "description": "Global Cars is a Nizhny Novgorod–based dealership specializing in buying, selling, and importing used cars from the USA and Europe. For their website I performed competitor analysis, designed a new logo and UI/UX, built an inventory dashboard, implemented a Prisma-powered database with server-side image storage, optimized the site for SEO, and deployed the production site to a VPS. Delivered features include the Main Page and a searchable Car Catalogue.",
+      "links": ["https://global-cars.ru"],
+      "skills": ["Next.js", "Prisma", "Database Design", "SEO", "UI/UX", "Deployment"],
+      "images": ["/projects/globalcars1.png", "/projects/globalcars2.png"]
+    },
+    {
+      "title": "StartupSeed – Platform for Startups and Investors",
+      "duration": "May 2025 - Jul 2025 · 3 mos",
+      "description": "StartupSeed is a concept platform connecting startup founders and investors across Malaysia. I built the prototype frontend and core flows: public and private startup listings, investor discovery and filtering, a Business Model Canvas tool, a business-analyzer page, and a basic secondary-market concept for early exits. Focus was on founder-first UX, efficient discovery, and low-fee monetization model to encourage adoption.",
+      "links": ["https://startupseedmy.netlify.app"],
+      "skills": ["Next.js", "React.js", "Product Design", "Startup Strategy", "Search & Filtering", "Project Management"],
+      "images": ["/projects/startupseed1.png", "/projects/startupseed2.png"]
+    },
+    {
+      "title": "CollabCode – Winner at The Dev Challenge",
+      "duration": "Jan 2025 - Feb 2025 · 2 mos",
+      "description": "Developed CollabCode, a real-time, browser-based coding platform that secured a winning position at The Dev Challenge, standing out among 203 projects for its impact on coding education. Engineered live coding sessions, classroom management tools, peer collaboration features, and gamified progress tracking. Built a scalable, secure system that allows seamless interaction with zero local setup, enhancing accessibility for students and educators worldwide.",
+      "links": ["https://devpost.com/software/collabcode", "https://collabcode-vob8.onrender.com"],
+      "skills": ["React.js", "Node.js", "WebSockets", "Python", "Express.js", "Database Management"],
+      "images": ["/projects/collabcode1.png", "/projects/collabcode2.png", "/projects/collabcode3.png"]
+    },
+    {
+      "title": "A3t Team Website – Frontend Developer",
+      "duration": "Jan 2025 · 1 mo",
+      "description": "Designed and developed an interactive, visually engaging website for A3t, showcasing team projects, hackathon participation, and business collaborations. Implemented dynamic themes inspired by popular games and ensured seamless performance across devices.",
+      "links": ["https://a3t.netlify.app"],
+      "skills": ["React.js", "Web Design", "UI/UX Development", "Frontend Optimization"],
+      "images": ["/projects/a3t1.png", "/projects/a3t2.png", "/projects/a3t3.png", "/projects/a3t4.png"]
+    },
+    {
+      "title": "Turn of Life – Multiplayer Game Developer",
+      "duration": "Dec 2024 - Jan 2025 · 2 mos",
+      "description": "Developed Turn of Life, a real-time multiplayer party game blending Monopoly, The Game of Life, and Jackbox elements. Engineered live gameplay, dynamic board mechanics, and interactive mini-games. Implemented WebSocket-based communication for seamless player interactions.",
+      "links": ["https://devpost.com/software/turn-of-life"],
+      "skills": ["React.js", "Node.js", "Socket.io", "Express.js", "Game Development"],
+      "images": ["/projects/turnoflife1.png"]
+    },
+    {
+      "title": "Telegram Scraper AI – AI Engineer & Developer",
+      "duration": "Dec 2024 · 1 mo",
+      "description": "Developed Telegram Scraper AI, an advanced tool leveraging OpenAI and Telethon to extract and analyze chat data securely. Integrated AI-driven insights for travel planning, financial safety, and community monitoring with multilingual support.",
+      "links": ["https://devpost.com/software/telegram-scraper-ai", "https://telegramscraperai.onrender.com"],
+      "skills": ["React.js", "Node.js", "OpenAI API", "Python", "Telethon", "Data Analysis"],
+      "images": ["/projects/telegramscraper1.png", "/projects/telegramscraper2.png", "/projects/telegramscraper3.png", "/projects/telegramscraper4.png"]
+    },
+    {
+      "title": "Pollution Zero – Hackathon Winner (1st Place)",
+      "duration": "Nov 2024 - Dec 2024 · 1 mo",
+      "description": "Built Pollution Zero, an award-winning web-based simulation game tackling environmental challenges. Implemented AI-driven analytics, real-world environmental problem-solving, and interactive mapping. Achieved 1st place in FireHacks Fall 2024 for innovation and impact.",
+      "links": ["https://devpost.com/software/pollution-zero"],
+      "skills": ["JavaScript", "React.js", "Node.js", "GeoJSON/Leaflet.js", "Machine Learning Integration"],
+      "images": ["/projects/pollutionzero1.png", "/projects/pollutionzero2.png", "/projects/pollutionzero3.png"]
+    }
+  ]
+}

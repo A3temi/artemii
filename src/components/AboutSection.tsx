@@ -1,10 +1,14 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { motion, useSpring, useMotionValue, useInView, useTransform, useScroll } from "framer-motion";
+import data from "@/components/data.json";
 
 const AboutSection = () => {
   const ref = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Get about data from JSON
+  const aboutData = data.about;
   
   // Check if device is mobile
   useEffect(() => {
@@ -67,20 +71,35 @@ const AboutSection = () => {
   useEffect(() => {
     if (isInView) {
       setTimeout(() => {
-        count.set(2.3); // keep your animated counter
+        count.set(aboutData.experienceYears);
       }, 500);
       animatedCount.on("change", (val) => {
         setDisplayCount(parseFloat(val.toFixed(1)));
       });
     }
-  }, [isInView, count, animatedCount]);
+  }, [isInView, count, animatedCount, aboutData.experienceYears]);
+
+  // Helper function to render text with highlights
+  const renderTextWithHighlights = (text: string, highlights: string[]) => {
+    if (highlights.length === 0) return text;
+    
+    let result = text;
+    highlights.forEach(highlight => {
+      result = result.replace(
+        highlight,
+        `<span class="font-semibold text-[#FFF7D6]">${highlight}</span>`
+      );
+    });
+    
+    return <span dangerouslySetInnerHTML={{ __html: result }} />;
+  };
 
   return (
     <div className="w-full overflow-hidden">
       <motion.section
         ref={ref}
-        style={{ x: isMobile ? 0 : x }} // Disable horizontal animation on mobile
-        id="section-2"
+        style={{ x: isMobile ? 0 : x }}
+        id="section-3"
         className="flex flex-col md:flex-row justify-between items-center w-full text-[#F8ECE4] p-4 md:p-12 gap-6 md:gap-10 mt-14 min-w-full"
       >
         {/* Left: About Section */}
@@ -92,26 +111,22 @@ const AboutSection = () => {
         >
           {/* Title */}
           <h2 className="text-3xl md:text-5xl font-extrabold mb-4 md:mb-6 text-[#F8ECE4] text-center md:text-left">
-            About
+            {aboutData.title}
           </h2>
           
-          {/* New Description */}
-          <p className="text-base md:text-xl leading-relaxed text-center md:text-left">
-            I am a full-stack web developer with <span className="font-semibold text-[#FFF7D6]">+2 years of combined experience</span> in web development, IT support, digital creation, and entrepreneurship. 
-            My expertise includes <span className="font-semibold text-[#FFF7D6]">React, Node.js, API integration, SQL,</span> and cloud services, with a proven track record of building and deploying high-performance web applications.
-          </p>
-
-          <p className="text-base md:text-xl leading-relaxed mt-4 md:mt-6 text-center md:text-left">
-            I&apos;ve completed <span className="font-semibold text-[#FFF7D6]">over 100 hours of hands-on IT training</span> and delivered award-winning projects, 
-            such as <span className="font-semibold text-[#FFF7D6]">Pollution Zero</span> (1st Place – FireHacks Fall 2024) and <span className="font-semibold text-[#FFF7D6]">CollabCode</span> (Top 50% – The Dev Challenge). 
-            My portfolio ranges from business platforms (<span className="font-semibold text-[#FFF7D6]">StartupSeed</span>) to real-time multiplayer games (<span className="font-semibold text-[#FFF7D6]">Turn of Life</span>).
-          </p>
-
-          <p className="text-base md:text-xl leading-relaxed mt-4 md:mt-6 text-center md:text-left">
-            Beyond coding, I bring experience in project management, UI/UX design, video editing, and digital marketing, enabling me to deliver solutions that are both technically sound and user-focused. 
-            I&apos;m driven by problem-solving, innovation, and creating tools that make processes more efficient and engaging.
-            <span className="block mt-2 font-semibold text-[#FFF7D6]">📍 Open to opportunities in web development and software engineering.</span>
-          </p>
+          {/* Paragraphs */}
+          {aboutData.paragraphs.map((paragraph, index) => (
+            <React.Fragment key={index}>
+              <p className="text-base md:text-xl leading-relaxed text-center md:text-left" style={{ marginTop: index > 0 ? '1.5rem' : '0' }}>
+                {renderTextWithHighlights(paragraph.text, paragraph.highlights)}
+                {paragraph.footer && (
+                  <span className="block mt-2 font-semibold text-[#FFF7D6]">
+                    {paragraph.footer}
+                  </span>
+                )}
+              </p>
+            </React.Fragment>
+          ))}
         </motion.div>
 
         {/* Right: Animated Years of Experience */}

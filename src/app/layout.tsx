@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Bebas_Neue } from 'next/font/google';
+
+const bebas = Bebas_Neue({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-bebas',
+});
 
 export const metadata: Metadata = {
   title: "Artemii Bakharev | Award-Winning Full-Stack Developer",
@@ -18,7 +25,7 @@ export const metadata: Metadata = {
     title: "Artemii Bakharev | Full-Stack Developer Portfolio",
     description: "Award-winning developer building efficient web applications with React,, Node.js and cloud technologies",
     type: "website",
-    url: "https://yourportfolio.com",
+    url: "https://www.linkedin.com/in/a3temii",
   },
   twitter: {
     card: "summary_large_image",
@@ -32,7 +39,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={bebas.variable}>
       <body className="min-h-screen flex flex-col">{children}</body>
     </html>
   );

@@ -1,438 +1,441 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
-import { Typewriter } from "react-simple-typewriter";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import ScrollVelocity from '@/components/ScrollVelocity';
+import data from "@/components/data.json";
 
-const experiences = [
-  {
-    "title": "CaseClicker.online – Full-Stack Developer",
-    "duration": "Aug 2024 - Nov 2024 · 4 mos",
-    "description": "Developed CaseClicker.online, a full-stack web application integrating APIs for ad management, authentication, encryption, and cloud infrastructure. Engineered a secure backend, a responsive frontend, and scalable cloud solutions to ensure a seamless user experience.",
-    "Links": ["https://caseclicker.online"],
-    "skills": [
-      "Problem Solving",
-      "Cloud Computing (Google Cloud)",
-      "Database Management (SQL)",
-      "API Integration",
-      "Node.js & Backend Programming",
-      "JavaScript/React Development",
-      "React.js",
-      "Database Design"
-    ],
-    "images": ["/projects/caseclicker1.png", "/projects/caseclicker2.png"]
-  },
-  {
-    "title": "Information Technology Assistant / HR",
-    "duration": "Jul 2023 - Aug 2023 · 2 mos",
-    "description": "Freelanced at VIP Auto Trans Inc, providing IT support and HR services. Designed digital assets, assisted with recruitment, and implemented employee benefits strategies to optimize business operations.",
-    "skills": [
-      "IT Support",
-      "HR & Recruitment",
-      "Employee Benefits Design",
-      "Digital Marketing",
-      "Graphic Design",
-      "Problem Solving"
-    ],
-    "images": []
-  },
-  {
-    "title": "Video Editor/Designer Intern",
-    "duration": "Jul 2022 - Aug 2022 · 2 mos",
-    "description": "Interned at Venkon Group in the IT department, working on video editing, graphic design, and digital advertising. Designed promotional materials and created a marketing video, enhancing brand outreach.",
-    "Links": ["https://youtu.be/7aHk5jdRVhI"],
-    "skills": [
-      "Video Editing",
-      "Graphic Design",
-      "Web Design",
-      "Digital Advertising",
-      "Figma",
-      "Content Creation"
-    ],
-    "images": ["/projects/video_editor1.png", "/projects/video_editor2.png", "/projects/video_editor3.png"]
-  },
-  {
-    "title": "Medical Clerk (Volunteer)",
-    "duration": "Feb 2022 - Jun 2022 · 5 mos",
-    "description": "Volunteered at the National Children's Medical Center of Tashkent, assisting with patient vital signs, sterilization processes, instrument packaging, and digital record management.",
-    "skills": [
-      "Medical Data Entry",
-      "Patient Care Assistance",
-      "Sterilization & Instrument Packaging",
-      "Hospital Information Systems (HIS)",
-      "Problem Solving"
-    ],
-    "images": ["/projects/volunteer_cert1.png"]
-  }
-];
+interface Experience {
+  id: number;
+  title: string;
+  subtitle: string;
+  fullTitle: string;
+  duration: string;
+  description: string;
+  links?: string[]; // Optional string array
+  skills: string[];
+  images: string[];
+}
 
-const ExperienceSection = () => {
-  const [selectedExp, setSelectedExp] = useState(experiences[0]);
-  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
-  const [showAllImages, setShowAllImages] = useState(false);
-  
-  // Single ref for scroll detection to avoid conflicts
-  const sectionRef = useRef(null);
-  
-  // Simplified scroll detection
-  const isInView = useInView(sectionRef, { 
-    once: true, 
-    margin: "-100px" 
-  });
+const InfiniteCarousel = () => {
+  const [likedPosts, setLikedPosts] = useState<Set<number>>(new Set());
+  const [savedPosts, setSavedPosts] = useState<Set<number>>(new Set());
+  const [selectedExperience, setSelectedExperience] = useState<Experience | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const velocity = useRef(0.5); // pixels per frame
+  const position = useRef(0);
+  const animationFrameId = useRef<number | null>(null);
+  const experiences = data.experiences;
 
-  // Professional animation variants
-  const containerVariants = {
-    hidden: { 
-      opacity: 0,
-      y: 60
-    },
-    visible: { 
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: [0.25, 0.46, 0.45, 0.94], // Professional easing
-        staggerChildren: 0.1
+  // Load liked/saved posts from localStorage on mount
+  useEffect(() => {
+    try {
+      const storedLiked = localStorage.getItem('carousel_liked');
+      const storedSaved = localStorage.getItem('carousel_saved');
+      
+      if (storedLiked) {
+        setLikedPosts(new Set(JSON.parse(storedLiked)));
       }
+      if (storedSaved) {
+        setSavedPosts(new Set(JSON.parse(storedSaved)));
+      }
+    } catch (error) {
+      console.error('Error loading from localStorage:', error);
     }
+  }, []);
+
+  // Save to localStorage whenever likes/saves change
+  useEffect(() => {
+    try {
+      localStorage.setItem('carousel_liked', JSON.stringify(Array.from(likedPosts)));
+      localStorage.setItem('carousel_saved', JSON.stringify(Array.from(savedPosts)));
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
+  }, [likedPosts, savedPosts]);
+
+  // Quintuple the experiences for extra smooth infinite looping
+  const multipliedExperiences = [
+    ...experiences,
+    ...experiences,
+    ...experiences,
+    ...experiences,
+    ...experiences
+  ];
+
+  useEffect(() => {
+    const cardWidth = 320;
+    const gap = 40;
+    const singleSetWidth = (cardWidth + gap) * experiences.length;
+
+    const animate = () => {
+      if (!isPaused && containerRef.current) {
+        position.current -= velocity.current;
+        
+        // Reset position seamlessly when we've moved one full set
+        if (Math.abs(position.current) >= singleSetWidth) {
+          position.current = position.current + singleSetWidth;
+        }
+        
+        containerRef.current.style.transform = `translateX(${position.current}px)`;
+      }
+      
+      animationFrameId.current = requestAnimationFrame(animate);
+    };
+
+    animationFrameId.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+    };
+  }, [isPaused]);
+
+  const toggleLike = (id: number) => {
+    setLikedPosts(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
   };
 
-  const leftPanelVariants = {
-    hidden: { 
-      opacity: 0, 
-      x: -50
-    },
-    visible: { 
-      opacity: 1, 
-      x: 0,
-      transition: { 
-        duration: 0.7, 
-        ease: [0.25, 0.46, 0.45, 0.94],
-        delay: 0.2 
+  const toggleSave = (id: number) => {
+    setSavedPosts(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
       }
-    }
-  };
-
-  const rightPanelVariants = {
-    hidden: { 
-      opacity: 0, 
-      x: 50
-    },
-    visible: { 
-      opacity: 1, 
-      x: 0,
-      transition: { 
-        duration: 0.7, 
-        ease: [0.25, 0.46, 0.45, 0.94],
-        delay: 0.3 
-      }
-    }
-  };
-
-  const experienceItemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: (i: number) => ({
-      opacity: 1,
-      x: 0,
-      transition: {
-        delay: i * 0.1,
-        duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    })
+      return newSet;
+    });
   };
 
   return (
-    <motion.section 
-      ref={sectionRef}
-      id="section-3" 
-      className="flex flex-col md:flex-row w-full text-[#F8ECE4] p-6 md:p-12 gap-10 mt-14"
-      variants={containerVariants}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-    >
-      {/* Left: Experience List */}
-      <motion.div
-        variants={leftPanelVariants}
-        className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-[#FFF7D6] p-6"
-      >
-        <motion.h3 
-          className="text-4xl font-bold text-center mb-6"
-          initial={{ opacity: 0, y: -20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+    <>
+      <div className="relative flex w-full flex-col items-center justify-center overflow-hidden text-white">
+        <ScrollVelocity
+          texts={['Experience']} 
+          velocity={80} 
+          // Styling the text: Bebas font, huge size, uppercase
+          className="font-bebas text-[12vw] font-bold uppercase leading-[0.85] tracking-wide text-[#F8ECE4] md:text-[10rem]"
+          numCopies={4}
+        />
+      </div>
+      <div className="w-full py-20 bg-[#2A272A] flex items-center justify-center overflow-hidden relative">
+        {/* Edge Gradients */}
+        <div className="absolute left-0 top-0 bottom-0 w-20 z-10 bg-gradient-to-r from-[#2A272A] to-transparent pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-20 z-10 bg-gradient-to-l from-[#2A272A] to-transparent pointer-events-none" />
+
+        {/* Moving Track */}
+        <div
+          ref={containerRef}
+          className="flex gap-10"
+          style={{ willChange: 'transform' }}
         >
-          Experience
-        </motion.h3>
-        
-        <motion.ul 
-          className="divide-y divide-[#FFF7D6]/50"
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-        >
-          {experiences.map((exp, index) => (
-            <motion.li
-              key={index}
-              custom={index}
-              variants={experienceItemVariants}
-              onClick={() => {setSelectedExp(exp); setShowAllImages(false)}}
-              className={`cursor-pointer flex items-center gap-4 py-4 transition-all duration-300 hover:bg-[#FFF7D6]/5 hover:px-2 rounded-lg ${
-                selectedExp.title === exp.title 
-                  ? "text-[#FFF7D6] bg-[#FFF7D6]/10 px-2 shadow-lg border-l-4 border-[#FFF7D6]" 
-                  : "hover:text-[#FFF7D6]/70"
-              }`}
-              whileHover={{ 
-                scale: 1.02,
-                transition: { duration: 0.2 }
-              }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <div className="relative w-12 h-12 flex-shrink-0">
-                <Image
-                  src={`/icons/exp${index + 1}.png`}
-                  alt={exp.title || "Experience Icon"}
-                  fill
-                  className="object-contain"
-                  sizes="48px"
-                />
-              </div>
-              <span className="font-medium">{exp.title}</span>
-            </motion.li>
+          {multipliedExperiences.map((experience, index) => (
+            <Card
+              key={`${experience.id}-${index}`}
+              experience={experience}
+              iconIndex={((index % experiences.length) % 4) + 1}
+              isLiked={likedPosts.has(experience.id)}
+              isSaved={savedPosts.has(experience.id)}
+              onLike={() => toggleLike(experience.id)}
+              onSave={() => toggleSave(experience.id)}
+              onHover={(hovering) => setIsPaused(hovering)}
+              onClick={() => setSelectedExperience(experience)}
+            />
           ))}
-        </motion.ul>
+        </div>
+      </div>
+
+      {/* Overlay Modal */}
+      {selectedExperience && (
+        <ExperienceOverlay
+          experience={selectedExperience}
+          onClose={() => setSelectedExperience(null)}
+        />
+      )}
+    </>
+  );
+};
+
+const Card = ({ 
+  experience, 
+  iconIndex, 
+  isLiked, 
+  isSaved, 
+  onLike, 
+  onSave,
+  onHover,
+  onClick
+}: { 
+  experience: Experience;
+  iconIndex: number;
+  isLiked: boolean;
+  isSaved: boolean;
+  onLike: () => void;
+  onSave: () => void;
+  onHover: (hovering: boolean) => void;
+  onClick: () => void;
+}) => {
+  const borderColor = "#FFF7D6";
+  const textColor = "#F8ECE4";
+  const bgColor = "#2A272A";
+  const displayImage = experience.images.length > 0 ? experience.images[0] : null;
+
+  return (
+    <div
+      className="shrink-0 w-[320px] h-[500px] rounded-3xl border-[3px] flex flex-col relative overflow-hidden cursor-pointer transition-transform hover:scale-105"
+      style={{ borderColor: borderColor, backgroundColor: bgColor }}
+      onMouseEnter={() => onHover(true)}
+      onMouseLeave={() => onHover(false)}
+      onClick={onClick}
+    >
+      {/* Header */}
+      <div className="p-4 flex items-center gap-3 border-b-[3px]" style={{ borderColor: borderColor }}>
+        <div
+          className="w-10 h-10 rounded-full border-2 overflow-hidden shrink-0 relative"
+          style={{ borderColor: borderColor }}
+        >
+          <Image
+            src={`/icons/exp${iconIndex}.png`}
+            alt="icon"
+            fill
+            className="object-contain"
+          />
+        </div>
+
+        <div className="flex flex-col overflow-hidden">
+          <h3 className="font-bold text-sm truncate leading-tight" style={{ color: textColor }}>
+            {experience.title}
+          </h3>
+          <p className="text-xs opacity-80 truncate" style={{ color: textColor }}>
+            {experience.subtitle}
+          </p>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 relative bg-[#2A272A] p-5 flex items-center justify-center">
+        {displayImage ? (
+          <div className="relative w-full h-full border-2 rounded-xl overflow-hidden" style={{ borderColor: borderColor }}>
+            <Image
+              src={displayImage}
+              alt={experience.title}
+              fill
+              className="object-cover opacity-90 hover:opacity-100 transition-opacity duration-300"
+            />
+          </div>
+        ) : (
+          <div className="w-full h-full border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-6 text-center relative overflow-hidden" style={{ borderColor: borderColor }}>
+            {/* Casual Emoji */}
+            <span className="text-4xl mb-1">😢</span>
+            
+            {/* Casual Title */}
+            <h4 className="text-lg font-bold z-10" style={{ color: textColor }}>
+              Sorry, no image
+            </h4>
+            <p className="text-xs opacity-70 z-10" style={{ color: textColor }}>
+              {experience.description.substring(0, 60)}...
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="h-14 flex items-center justify-between px-5 pb-2">
+        <button 
+          className="group"
+          onClick={(e) => {
+            e.stopPropagation();
+            onLike();
+          }}
+        >
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill={isLiked ? borderColor : "none"}
+            stroke={borderColor}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="transition-transform group-hover:scale-110 group-active:scale-90"
+          >
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </button>
+
+        <button 
+          className="group"
+          onClick={(e) => {
+            e.stopPropagation();
+            onSave();
+          }}
+        >
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill={isSaved ? borderColor : "none"}
+            stroke={borderColor}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="transition-transform group-hover:scale-110 group-active:scale-90"
+          >
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const ExperienceOverlay = ({ experience, onClose }: { experience: Experience; onClose: () => void }) => {
+  const borderColor = "#FFF7D6";
+  const textColor = "#F8ECE4";
+  const bgColor = "#2A272A";
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          className="bg-[#2A272A] rounded-3xl border-[3px] max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+          style={{ borderColor }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Close Button */}
+          <div className="sticky top-0 bg-[#2A272A] border-b-[3px] p-4 flex justify-between items-center z-10" style={{ borderColor }}>
+            <h2 className="text-2xl font-bold" style={{ color: textColor }}>{experience.fullTitle}</h2>
+            <button onClick={onClose} className="text-3xl hover:scale-110 transition-transform" style={{ color: borderColor }}>×</button>
+          </div>
+
+          {/* Content */}
+          <div className="p-6 space-y-6">
+            {/* Duration */}
+            <div>
+              <p className="text-sm opacity-70" style={{ color: textColor }}>{experience.duration}</p>
+            </div>
+
+            {/* Description */}
+            <div>
+              <h3 className="text-lg font-semibold mb-2" style={{ color: borderColor }}>Description</h3>
+              <p className="leading-relaxed" style={{ color: textColor }}>{experience.description}</p>
+            </div>
+
+            {/* Links */}
+            {experience.links && experience.links.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold mb-2" style={{ color: borderColor }}>Links</h3>
+                <div className="space-y-2">
+                  {experience.links.map((link: string, idx: number) => (
+                    <a
+                      key={idx}
+                      href={link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block underline hover:opacity-70 transition-opacity"
+                      style={{ color: textColor }}
+                    >
+                      {link}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Skills */}
+            <div>
+              <h3 className="text-lg font-semibold mb-3" style={{ color: borderColor }}>Skills</h3>
+              <div className="flex flex-wrap gap-2">
+                {experience.skills.map((skill: string, idx: number) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 rounded-full text-sm border-2"
+                    style={{ borderColor, color: textColor, backgroundColor: bgColor }}
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Images */}
+            {experience.images.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold mb-3" style={{ color: borderColor }}>Gallery</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {experience.images.map((img: string, idx: number) => (
+                    <div 
+                      key={idx} 
+                      className="relative h-64 border-2 rounded-xl overflow-hidden cursor-pointer hover:opacity-80 transition-opacity" 
+                      style={{ borderColor }}
+                      onClick={() => setFullscreenImage(img)}
+                    >
+                      <Image src={img} alt={`${experience.title} ${idx + 1}`} fill className="object-cover" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </motion.div>
       </motion.div>
 
-      <AnimatePresence mode="wait">
-        {/* Right: Experience Details */}
-        <motion.div
-          key={selectedExp.title}
-          variants={rightPanelVariants}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
-          className="w-full md:w-2/3 p-6"
-        >
-          {/* Title */}
-          <motion.h3 
-            className="text-3xl font-bold mb-2"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Typewriter
-              words={[selectedExp.title]}
-              loop={1}
-              cursor={false}
-              typeSpeed={30}
-              deleteSpeed={15}
-              delaySpeed={150}
-            />
-          </motion.h3>
-
-          {/* Duration */}
-          <motion.p 
-            className="text-[#FFF7D6]/70 mb-4"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <Typewriter
-              words={[selectedExp.duration]}
-              loop={1}
-              cursor={false}
-              typeSpeed={30}
-              deleteSpeed={15}
-              delaySpeed={150}
-            />
-          </motion.p>
-
-          {/* Description */}
-          <motion.p 
-            className="text-lg leading-relaxed mb-4"
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Typewriter
-              words={[selectedExp.description]}
-              loop={1}
-              cursor={false}
-              typeSpeed={10}
-              deleteSpeed={15}
-              delaySpeed={150}
-            />
-          </motion.p>
-
-          {Array.isArray(selectedExp.Links) && selectedExp.Links.length > 0 && (
-            <motion.div 
-              className="mt-4"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <h4 className="font-semibold mb-2">Project Link:</h4>
-              {selectedExp.Links.map((link, index) => (
-                <motion.a
-                  key={index}
-                  href={link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="text-[#4FA3D1] underline hover:no-underline transition duration-300 block hover:text-[#6BB3D6]"
-                  whileHover={{ x: 5 }}
-                >
-                  {link}
-                </motion.a>
-              ))}
-            </motion.div>
-          )}
-
-          {/* Skills */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            <h4 className="font-semibold mt-4">Skills:</h4>
-            <ul className="list-disc pl-5 mb-4">
-              {selectedExp.skills.map((skill, index) => (
-                <motion.li
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 1, delay: index * 0.05 }}
-                  className="hover:text-[#FFF7D6] transition-colors duration-200"
-                >
-                  {skill}
-                </motion.li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* Project Images */}
-          {selectedExp.images && selectedExp.images.length > 0 && (
-            <motion.div 
-              className="mt-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              <h4 className="font-semibold mb-2">Project Images:</h4>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                <AnimatePresence mode="wait">
-                  {selectedExp.images
-                    .slice(0, showAllImages ? selectedExp.images.length : 2)
-                    .map((img, index) => (
-                      <motion.div
-                        key={img}
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
-                        transition={{ 
-                          duration: 0.6, 
-                          delay: index * 0.1,
-                          ease: [0.25, 0.46, 0.45, 0.94]
-                        }}
-                        className="relative w-40 h-40 md:w-48 md:h-48 cursor-pointer overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                        onClick={() => setZoomedImage(img)}
-                        whileHover={{ 
-                          scale: 1.03,
-                          transition: { duration: 0.2 }
-                        }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <Image
-                          src={img}
-                          alt={`Project screenshot ${index + 1}`}
-                          fill
-                          className="object-cover rounded-lg"
-                          sizes="(max-width: 768px) 160px, 192px"
-                        />
-                      </motion.div>
-                    ))}
-                </AnimatePresence>
-
-                {/* Show all media button */}
-                {selectedExp.images.length > 2 && !showAllImages && (
-                  <motion.div 
-                    className="w-40 md:w-48 h-40 md:h-48 flex items-center justify-center"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                  >
-                    <motion.span
-                      className="px-4 py-2 text-lg font-semibold text-[#FFF7D6] underline hover:no-underline cursor-pointer transition bg-[#FFF7D6]/10 rounded-lg hover:bg-[#FFF7D6]/20"
-                      onClick={() => setShowAllImages(true)}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      Show all {selectedExp.images.length} media
-                    </motion.span>
-                  </motion.div>
-                )}
-
-                {/* Show less button */}
-                {selectedExp.images.length > 2 && showAllImages && (
-                  <motion.div 
-                    className="w-40 md:w-48 h-40 md:h-48 flex items-center justify-center"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <motion.span
-                      className="px-4 py-2 text-lg font-semibold text-[#FFF7D6] underline hover:no-underline cursor-pointer transition bg-[#FFF7D6]/10 rounded-lg hover:bg-[#FFF7D6]/20"
-                      onClick={() => setShowAllImages(false)}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      Show less
-                    </motion.span>
-                  </motion.div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Enhanced Zoomed Image Modal */}
+      {/* Fullscreen Image Overlay */}
       <AnimatePresence>
-        {zoomedImage && (
+        {fullscreenImage && (
           <motion.div
-            className="fixed inset-0 flex items-center justify-center bg-black/90 z-50 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setZoomedImage(null)}
+            className="fixed inset-0 bg-black bg-opacity-95 z-[60] flex items-center justify-center p-4"
+            onClick={() => setFullscreenImage(null)}
           >
             <motion.div
-              className="relative max-w-[90vw] max-h-[90vh]"
-              initial={{ scale: 0.3, opacity: 0, rotateY: -15 }}
-              animate={{ scale: 1, opacity: 1, rotateY: 0 }}
-              exit={{ scale: 0.3, opacity: 0, rotateY: 15 }}
-              transition={{ 
-                duration: 0.4,
-                ease: [0.25, 0.46, 0.45, 0.94]
-              }}
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              className="relative w-full h-full max-w-6xl max-h-[90vh]"
+              onClick={(e) => e.stopPropagation()}
             >
-              <Image
-                src={zoomedImage}
-                alt="Zoomed project image"
-                width={800}
-                height={600}
-                className="rounded-lg shadow-2xl max-w-full max-h-full object-contain"
+              <Image 
+                src={fullscreenImage} 
+                alt="Fullscreen view" 
+                fill 
+                className="object-contain"
               />
+              <button
+                onClick={() => setFullscreenImage(null)}
+                className="absolute top-4 right-4 text-white text-4xl hover:scale-110 transition-transform bg-black bg-opacity-50 rounded-full w-12 h-12 flex items-center justify-center"
+              >
+                ×
+              </button>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.section>
+    </>
   );
 };
 
-export default ExperienceSection;
+export default InfiniteCarousel;
