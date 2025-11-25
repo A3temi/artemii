@@ -422,7 +422,7 @@ const HeroSection = () => {
             </AnimatePresence>
 
             {/* Bottom Action Buttons */}
-            <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between z-20">
+            <div className="relative mt-6 flex items-center justify-between z-20">
               {/* Resume PDF Button - Left */}
               <motion.button
                 initial={{ opacity: 0, scale: 0.8 }}
