@@ -109,7 +109,7 @@
       "images": ["/projects/fulhive1.png", "/projects/fulhive2.png", "/projects/fulhive3.png"]
     },
     {
-      "id": 1,
+      "id": 4,
       "title": "CaseClicker.online",
       "subtitle": "Full-Stack Developer",
       "fullTitle": "CaseClicker.online – Full-Stack Developer",
@@ -129,7 +129,7 @@
       "images": ["/projects/caseclicker1.png", "/projects/caseclicker2.png"]
     },
     {
-      "id": 2,
+      "id": 3,
       "title": "VIP Auto Trans Inc",
       "subtitle": "IT Assistant / HR",
       "fullTitle": "Information Technology Assistant / HR",
@@ -147,7 +147,7 @@
       "images": []
     },
     {
-      "id": 3,
+      "id": 2,
       "title": "Venkon Group",
       "subtitle": "Video Editor Intern",
       "fullTitle": "Video Editor/Designer Intern",
@@ -165,7 +165,7 @@
       "images": ["/projects/video_editor1.png", "/projects/video_editor2.png", "/projects/video_editor3.png"]
     },
     {
-      "id": 4,
+      "id": 1,
       "title": "National Children's Center",
       "subtitle": "Medical Clerk (Volunteer)",
       "fullTitle": "Medical Clerk (Volunteer)",

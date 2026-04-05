@@ -14,6 +14,7 @@ interface ResumeData {
     paragraphs: Array<{ text: string }>;
   };
   experiences: Array<{
+    id: number;
     fullTitle: string;
     duration: string;
     description: string;
@@ -24,6 +25,7 @@ interface ResumeData {
     desc: string;
   }>;
   projects: Array<{
+    id: number;
     title: string;
     duration: string;
     description: string;
@@ -54,6 +56,8 @@ export const generateResumePDF = async (data: ResumeData) => {
   const pdf = new jsPDF();
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
+  const sortedProjects = [...data.projects].sort((left, right) => right.id - left.id);
+  const sortedExperiences = [...data.experiences].sort((left, right) => right.id - left.id);
   
   // Define column widths
   const leftColumnWidth = 65;
@@ -94,6 +98,149 @@ export const generateResumePDF = async (data: ResumeData) => {
     }
     
     return y + (lines.length * fontSize * 0.5);
+  };
+
+  const getLineHeight = (fontSize: number) => fontSize * 0.5;
+
+  const getWrappedLines = (
+    text: string,
+    maxWidth: number,
+    fontSize: number,
+    isBold: boolean = false
+  ) => {
+    pdf.setFontSize(fontSize);
+    pdf.setFont('helvetica', isBold ? 'bold' : 'normal');
+    return pdf.splitTextToSize(text, maxWidth) as string[];
+  };
+
+  const drawLines = (
+    lines: string[],
+    x: number,
+    y: number,
+    fontSize: number,
+    isBold: boolean = false,
+    color: [number, number, number] = [0, 0, 0]
+  ) => {
+    pdf.setFontSize(fontSize);
+    pdf.setFont('helvetica', isBold ? 'bold' : 'normal');
+    pdf.setTextColor(...color);
+
+    const lineHeight = getLineHeight(fontSize);
+    lines.forEach((line, index) => {
+      pdf.text(line, x, y + (index * lineHeight));
+    });
+
+    return y + (Math.max(lines.length, 1) * lineHeight);
+  };
+
+  const ensureRightColumnSpace = (requiredHeight: number, currentY: number) => {
+    if (currentY + requiredHeight <= pageHeight - 12) {
+      return currentY;
+    }
+
+    pdf.addPage();
+    drawLeftColumnBackground();
+    return 15;
+  };
+
+  const renderProjectSummary = async (
+    project: ResumeData['projects'][number],
+    startY: number
+  ) => {
+    const iconBoxSize = 16;
+    const textStartX = rightColumnStart + iconBoxSize + 6;
+    const textWidth = rightColumnWidth - iconBoxSize - 6;
+    const titleLines = getWrappedLines(project.title, textWidth, 10, true);
+    const durationLines = getWrappedLines(project.duration, textWidth, 7);
+    const descriptionLines = getWrappedLines(project.description, rightColumnWidth, 8);
+    const skillsLines = getWrappedLines(project.skills.join(' • '), rightColumnWidth - 10, 7.5);
+
+    const titleHeight = titleLines.length * getLineHeight(10);
+    const durationHeight = durationLines.length * getLineHeight(7);
+    const headerHeight = Math.max(iconBoxSize, titleHeight + 1.5 + durationHeight);
+    const descriptionHeight = descriptionLines.length * getLineHeight(8);
+    const skillsHeight = Math.max(getLineHeight(7.5), skillsLines.length * getLineHeight(7.5));
+    const blockHeight = headerHeight + 5 + descriptionHeight + 3 + skillsHeight + 9;
+
+    let currentY = ensureRightColumnSpace(blockHeight, startY);
+
+    try {
+      const projImg = await loadImage(`/icons/proj${project.id}.png`);
+      const aspectRatio = projImg.width / projImg.height;
+      const imgWidth = aspectRatio > 1 ? iconBoxSize : iconBoxSize * aspectRatio;
+      const imgHeight = aspectRatio > 1 ? iconBoxSize / aspectRatio : iconBoxSize;
+
+      pdf.addImage(projImg, 'PNG', rightColumnStart, currentY, imgWidth, imgHeight, undefined, 'FAST');
+    } catch (error) {
+      console.error(`Error loading proj${project.id}.png:`, error);
+    }
+
+    let textY = currentY + 4.5;
+    textY = drawLines(titleLines, textStartX, textY, 10, true, [0, 0, 0]);
+    textY += 1.5;
+    drawLines(durationLines, textStartX, textY, 7, false, [100, 100, 100]);
+
+    currentY += headerHeight + 5;
+    currentY = drawLines(descriptionLines, rightColumnStart, currentY, 8, false, [0, 0, 0]);
+    currentY += 3;
+
+    pdf.setFontSize(7.5);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(42, 39, 42);
+    pdf.text('Skills: ', rightColumnStart, currentY);
+
+    currentY = drawLines(skillsLines, rightColumnStart + 10, currentY, 7.5, false, [0, 0, 0]);
+    return currentY + 9;
+  };
+
+  const renderExperienceSummary = async (
+    experience: ResumeData['experiences'][number],
+    startY: number
+  ) => {
+    const iconBoxSize = 18;
+    const textStartX = rightColumnStart + iconBoxSize + 6;
+    const textWidth = rightColumnWidth - iconBoxSize - 6;
+    const titleLines = getWrappedLines(experience.fullTitle, textWidth, 10, true);
+    const durationLines = getWrappedLines(experience.duration, textWidth, 8);
+    const descriptionLines = getWrappedLines(experience.description, rightColumnWidth, 9);
+    const skillsLines = getWrappedLines(experience.skills.join(' • '), rightColumnWidth - 10, 7.5);
+
+    const titleHeight = titleLines.length * getLineHeight(10);
+    const durationHeight = durationLines.length * getLineHeight(8);
+    const headerHeight = Math.max(iconBoxSize, titleHeight + 1.5 + durationHeight);
+    const descriptionHeight = descriptionLines.length * getLineHeight(9);
+    const skillsHeight = Math.max(getLineHeight(7.5), skillsLines.length * getLineHeight(7.5));
+    const blockHeight = headerHeight + 6 + descriptionHeight + 4 + skillsHeight + 10;
+
+    let currentY = ensureRightColumnSpace(blockHeight, startY);
+
+    try {
+      const expImg = await loadImage(`/icons/exp${experience.id}.png`);
+      const aspectRatio = expImg.width / expImg.height;
+      const imgWidth = aspectRatio > 1 ? iconBoxSize : iconBoxSize * aspectRatio;
+      const imgHeight = aspectRatio > 1 ? iconBoxSize / aspectRatio : iconBoxSize;
+
+      pdf.addImage(expImg, 'PNG', rightColumnStart, currentY, imgWidth, imgHeight, undefined, 'FAST');
+    } catch (error) {
+      console.error(`Error loading exp${experience.id}.png:`, error);
+    }
+
+    let textY = currentY + 5;
+    textY = drawLines(titleLines, textStartX, textY, 10, true, [0, 0, 0]);
+    textY += 1.5;
+    drawLines(durationLines, textStartX, textY, 8, false, [100, 100, 100]);
+
+    currentY += headerHeight + 6;
+    currentY = drawLines(descriptionLines, rightColumnStart, currentY, 9, false, [0, 0, 0]);
+    currentY += 4;
+
+    pdf.setFontSize(7.5);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(42, 39, 42);
+    pdf.text('Skills: ', rightColumnStart, currentY);
+
+    currentY = drawLines(skillsLines, rightColumnStart + 10, currentY, 7.5, false, [0, 0, 0]);
+    return currentY + 10;
   };
 
   // Store left column content to render later
@@ -382,69 +529,8 @@ export const generateResumePDF = async (data: ResumeData) => {
   pdf.line(rightColumnStart, rightYPos, pageWidth - 10, rightYPos);
   rightYPos += 8;
 
-  for (let i = 0; i < Math.min(data.projects.length, 7); i++) {
-    const project = data.projects[i];
-    
-    if (rightYPos > pageHeight - 40) {
-      pdf.addPage();
-      drawLeftColumnBackground();
-      rightYPos = 15;
-    }
-
-    try {
-      const projImg = await loadImage(`/icons/proj${i + 1}.png`);
-      const maxIconSize = 16;
-      const aspectRatio = projImg.width / projImg.height;
-      const imgWidth = aspectRatio > 1 ? maxIconSize : maxIconSize * aspectRatio;
-      const imgHeight = aspectRatio > 1 ? maxIconSize / aspectRatio : maxIconSize;
-      
-      pdf.addImage(projImg, 'PNG', rightColumnStart, rightYPos, imgWidth, imgHeight, undefined, 'FAST');
-      
-      const textStartX = rightColumnStart + maxIconSize + 6;
-      
-      pdf.setFontSize(10);
-      pdf.setFont('helvetica', 'bold');
-      pdf.setTextColor(0, 0, 0);
-      pdf.text(project.title, textStartX, rightYPos + 5);
-
-      pdf.setFontSize(7);
-      pdf.setFont('helvetica', 'italic');
-      pdf.setTextColor(100, 100, 100);
-      pdf.text(project.duration, textStartX, rightYPos + 11);
-
-      rightYPos += Math.max(imgHeight, 16) + 5;
-    } catch (error) {
-      console.error(`Error loading proj${i + 1}.png:`, error);
-      
-      pdf.setFontSize(10);
-      pdf.setFont('helvetica', 'bold');
-      pdf.setTextColor(0, 0, 0);
-      pdf.text(project.title, rightColumnStart, rightYPos);
-      rightYPos += 5;
-
-      pdf.setFontSize(7);
-      pdf.setFont('helvetica', 'italic');
-      pdf.setTextColor(100, 100, 100);
-      pdf.text(project.duration, rightColumnStart, rightYPos);
-      rightYPos += 5;
-    }
-
-    // Project Description
-    pdf.setTextColor(0, 0, 0);
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(8);
-    rightYPos = addText(project.description, rightColumnStart, rightYPos, rightColumnWidth, 8);
-    rightYPos += 3;
-
-    // Project Skills
-    pdf.setFontSize(7.5);
-    pdf.setFont('helvetica', 'bold');
-    pdf.setTextColor(42, 39, 42);
-    pdf.text('Skills: ', rightColumnStart, rightYPos);
-    pdf.setFont('helvetica', 'normal');
-    pdf.setTextColor(0, 0, 0);
-    rightYPos = addText(project.skills.join(' • '), rightColumnStart + 10, rightYPos, rightColumnWidth - 10, 7.5);
-    rightYPos += 9;
+  for (let i = 0; i < Math.min(sortedProjects.length, 7); i++) {
+    rightYPos = await renderProjectSummary(sortedProjects[i], rightYPos);
   }
 
   rightYPos += 3;
@@ -467,67 +553,8 @@ export const generateResumePDF = async (data: ResumeData) => {
   pdf.line(rightColumnStart, rightYPos, pageWidth - 10, rightYPos);
   rightYPos += 8;
 
-  for (let i = 0; i < Math.min(data.experiences.length, 4); i++) {
-    const exp = data.experiences[i];
-    
-    if (rightYPos > pageHeight - 50) {
-      pdf.addPage();
-      drawLeftColumnBackground();
-      rightYPos = 15;
-    }
-
-    try {
-      const expImg = await loadImage(`/icons/exp${i + 1}.png`);
-      const maxIconSize = 18;
-      const aspectRatio = expImg.width / expImg.height;
-      const imgWidth = aspectRatio > 1 ? maxIconSize : maxIconSize * aspectRatio;
-      const imgHeight = aspectRatio > 1 ? maxIconSize / aspectRatio : maxIconSize;
-      
-      pdf.addImage(expImg, 'PNG', rightColumnStart, rightYPos, imgWidth, imgHeight, undefined, 'FAST');
-      
-      const textStartX = rightColumnStart + maxIconSize + 6;
-      
-      pdf.setFontSize(10);
-      pdf.setFont('helvetica', 'bold');
-      pdf.setTextColor(0, 0, 0);
-      pdf.text(exp.fullTitle, textStartX, rightYPos + 6);
-
-      pdf.setFontSize(8);
-      pdf.setFont('helvetica', 'italic');
-      pdf.setTextColor(100, 100, 100);
-      pdf.text(exp.duration, textStartX, rightYPos + 12);
-
-      rightYPos += Math.max(imgHeight, 18) + 6;
-    } catch (error) {
-      console.error(`Error loading exp${i + 1}.png:`, error);
-      
-      pdf.setFontSize(10);
-      pdf.setFont('helvetica', 'bold');
-      pdf.setTextColor(0, 0, 0);
-      pdf.text(exp.fullTitle, rightColumnStart, rightYPos);
-      rightYPos += 6;
-
-      pdf.setFontSize(8);
-      pdf.setFont('helvetica', 'italic');
-      pdf.setTextColor(100, 100, 100);
-      pdf.text(exp.duration, rightColumnStart, rightYPos);
-      rightYPos += 6;
-    }
-
-    pdf.setTextColor(0, 0, 0);
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(9);
-    rightYPos = addText(exp.description, rightColumnStart, rightYPos, rightColumnWidth, 9);
-    rightYPos += 4;
-
-    pdf.setFontSize(7.5);
-    pdf.setFont('helvetica', 'bold');
-    pdf.setTextColor(42, 39, 42);
-    pdf.text('Skills: ', rightColumnStart, rightYPos);
-    pdf.setFont('helvetica', 'normal');
-    pdf.setTextColor(0, 0, 0);
-    rightYPos = addText(exp.skills.join(' • '), rightColumnStart + 10, rightYPos, rightColumnWidth - 10, 7.5);
-    rightYPos += 10;
+  for (const experience of sortedExperiences) {
+    rightYPos = await renderExperienceSummary(experience, rightYPos);
   }
 
   // Save PDF
