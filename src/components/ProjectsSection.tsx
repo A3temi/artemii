@@ -6,8 +6,18 @@ import { Typewriter } from "react-simple-typewriter";
 import Image from "next/image";
 import data from "@/components/data.json";
 
+interface Project {
+  id: number;
+  title: string;
+  duration: string;
+  description: string;
+  links?: string[];
+  skills: string[];
+  images: string[];
+}
+
 const ProjectsSection = () => {
-  const projects = data.projects;
+  const projects = [...data.projects].sort((left, right) => right.id - left.id) as Project[];
   const [selectedProj, setSelectedProj] = useState(projects[0]);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   const [showAllImages, setShowAllImages] = useState(false);
@@ -118,7 +128,7 @@ const projectItemVariants: Variants = {
         >
           {projects.map((proj, index) => (
             <motion.li
-              key={index}
+              key={proj.id}
               custom={index}
               variants={projectItemVariants}
               onClick={() => {setSelectedProj(proj); setShowAllImages(false)}}
@@ -135,7 +145,7 @@ const projectItemVariants: Variants = {
             >
               <div className="relative w-12 h-12 flex-shrink-0">
                 <Image
-                  src={`/icons/proj${index + 1}.png`}
+                  src={`/icons/proj${proj.id}.png`}
                   alt={proj.title || "Project Icon"}
                   fill
                   className="object-contain"
@@ -273,32 +283,14 @@ const projectItemVariants: Variants = {
                   {selectedProj.images
                     .slice(0, showAllImages ? selectedProj.images.length : 2)
                     .map((img, index) => (
-                      <motion.div
+                      <ProjectImageCard
                         key={img}
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
-                        transition={{ 
-                          duration: 0.6, 
-                          delay: index * 0.1,
-                          ease: [0.25, 0.46, 0.45, 0.94]
-                        }}
-                        className="relative w-40 h-40 md:w-48 md:h-48 cursor-pointer overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                        onClick={() => setZoomedImage(img)}
-                        whileHover={{ 
-                          scale: 1.03,
-                          transition: { duration: 0.2 }
-                        }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <Image
-                          src={img}
-                          alt={`Project screenshot ${index + 1}`}
-                          fill
-                          className="object-cover rounded-lg"
-                          sizes="(max-width: 768px) 160px, 192px"
-                        />
-                      </motion.div>
+                        src={img}
+                        alt={`Project screenshot ${index + 1}`}
+                        title={selectedProj.title}
+                        index={index}
+                        onZoom={() => setZoomedImage(img)}
+                      />
                     ))}
                 </AnimatePresence>
 
@@ -356,7 +348,7 @@ const projectItemVariants: Variants = {
             onClick={() => setZoomedImage(null)}
           >
             <motion.div
-              className="relative max-w-[90vw] max-h-[90vh]"
+              className="relative h-[min(88vh,900px)] w-[min(92vw,1400px)]"
               initial={{ scale: 0.3, opacity: 0, rotateY: -15 }}
               animate={{ scale: 1, opacity: 1, rotateY: 0 }}
               exit={{ scale: 0.3, opacity: 0, rotateY: 15 }}
@@ -368,9 +360,9 @@ const projectItemVariants: Variants = {
               <Image
                 src={zoomedImage}
                 alt="Zoomed project image"
-                width={800}
-                height={600}
-                className="rounded-lg shadow-2xl max-w-full max-h-full object-contain"
+                fill
+                className="rounded-lg shadow-2xl object-contain"
+                sizes="92vw"
               />
             </motion.div>
           </motion.div>
@@ -379,5 +371,72 @@ const projectItemVariants: Variants = {
     </motion.section>
   );
 };
+
+const ProjectImageCard = ({
+  src,
+  alt,
+  title,
+  index,
+  onZoom,
+}: {
+  src: string;
+  alt: string;
+  title: string;
+  index: number;
+  onZoom: () => void;
+}) => {
+  const [hasError, setHasError] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0, opacity: 0 }}
+      transition={{ 
+        duration: 0.6, 
+        delay: index * 0.1,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }}
+      className={`relative w-40 h-40 overflow-hidden rounded-lg shadow-lg transition-all duration-300 md:h-48 md:w-48 ${hasError ? "cursor-default" : "cursor-pointer hover:shadow-xl"}`}
+      onClick={hasError ? undefined : onZoom}
+      whileHover={hasError ? undefined : {
+        scale: 1.03,
+        transition: { duration: 0.2 }
+      }}
+      whileTap={hasError ? undefined : { scale: 0.95 }}
+    >
+      {hasError ? (
+        <div className="flex h-full w-full items-center justify-center rounded-lg border border-dashed border-[#FFF7D6]/60 bg-[#FFF7D6]/5 p-4 text-center text-sm text-[#FFEACF]">
+          {title} image will appear here after you upload it to `public/projects`.
+        </div>
+      ) : (
+        <ProjectImageTile
+          src={src}
+          alt={alt}
+          onError={() => setHasError(true)}
+        />
+      )}
+    </motion.div>
+  );
+};
+
+const ProjectImageTile = ({
+  src,
+  alt,
+  onError,
+}: {
+  src: string;
+  alt: string;
+  onError: () => void;
+}) => (
+  <Image
+    src={src}
+    alt={alt}
+    fill
+    className="rounded-lg object-cover"
+    sizes="(max-width: 768px) 160px, 192px"
+    onError={onError}
+  />
+);
 
 export default ProjectsSection;

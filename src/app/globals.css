@@ -12,3 +12,12 @@ body {
   @apply bg-[#2A272A] text-[#F8ECE4];
   overflow-x: hidden;
 }
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Bebas_Neue } from 'next/font/google';
+import ViewTracker from "@/components/ViewTracker";
 
 const bebas = Bebas_Neue({
   weight: '400',
@@ -40,7 +41,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={bebas.variable}>
-      <body className="min-h-screen flex flex-col">{children}</body>
+      <body className="min-h-screen flex flex-col">
+        <ViewTracker />
+        {children}
+      </body>
     </html>
   );
 }

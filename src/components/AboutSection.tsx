@@ -24,27 +24,12 @@ const AboutSection = () => {
 
   // Prevent horizontal overflow on the body/html
   useEffect(() => {
-    // Ensure no horizontal overflow is possible
     document.body.style.overflowX = 'hidden';
     document.documentElement.style.overflowX = 'hidden';
-    
-    // Also prevent horizontal scrolling via CSS
-    const style = document.createElement('style');
-    style.textContent = `
-      html, body {
-        overflow-x: hidden !important;
-        max-width: 100vw !important;
-      }
-      * {
-        max-width: 100% !important;
-      }
-    `;
-    document.head.appendChild(style);
-    
+
     return () => {
       document.body.style.overflowX = '';
       document.documentElement.style.overflowX = '';
-      document.head.removeChild(style);
     };
   }, []);
 
@@ -73,9 +58,12 @@ const AboutSection = () => {
       setTimeout(() => {
         count.set(aboutData.experienceYears);
       }, 500);
-      animatedCount.on("change", (val) => {
+
+      const unsubscribe = animatedCount.on("change", (val) => {
         setDisplayCount(parseFloat(val.toFixed(1)));
       });
+
+      return () => unsubscribe();
     }
   }, [isInView, count, animatedCount, aboutData.experienceYears]);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
@@ -11,9 +11,37 @@ const HeroSection = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [isAchievementsCtaHovered, setIsAchievementsCtaHovered] = useState(false);
+  const [isAchievementsCtaPressed, setIsAchievementsCtaPressed] = useState(false);
+  const achievementsCtaTimeoutRef = useRef<number | null>(null);
+  const resume = data.resume;
   const medals = data.achievements;
+  const totalExperience = `${Number(data.about.experienceYears).toFixed(1)} years`;
+  const isAchievementsCtaActive = isAchievementsCtaHovered || isAchievementsCtaPressed;
 
   const navItems = ['Here', 'Achievements', 'About', 'Experience', 'Projects', 'Quote'];
+
+  useEffect(() => {
+    return () => {
+      if (achievementsCtaTimeoutRef.current) {
+        window.clearTimeout(achievementsCtaTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const toggleAchievementsView = () => {
+    setIsAchievementsCtaPressed(true);
+
+    if (achievementsCtaTimeoutRef.current) {
+      window.clearTimeout(achievementsCtaTimeoutRef.current);
+    }
+
+    achievementsCtaTimeoutRef.current = window.setTimeout(() => {
+      setIsAchievementsCtaPressed(false);
+    }, 320);
+
+    setShowAchievements((prev) => !prev);
+  };
 
   const handleNavClick = (index: number) => {
     if (index === 0) {
@@ -247,7 +275,7 @@ const HeroSection = () => {
                         }}
                       >
                         <Image 
-                          src="/profile.webp"
+                          src={resume.profileImage}
                           alt="Profile Picture"
                           width={128}
                           height={128}
@@ -266,7 +294,7 @@ const HeroSection = () => {
                           }}
                           className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#F8ECE4] mb-1"
                         >
-                          Artemii Bakharev
+                          {resume.name}
                         </motion.h1>
                         <motion.p 
                           initial={{ opacity: 0, y: 20 }}
@@ -278,7 +306,7 @@ const HeroSection = () => {
                           }}
                           className="text-lg sm:text-xl md:text-2xl text-[#FFEACF] mb-3"
                         >
-                          Full-Stack Web Developer / Founder
+                          {resume.title}
                         </motion.p>
                       </div>
                     </div>
@@ -296,11 +324,11 @@ const HeroSection = () => {
                     className="mt-4 space-y-2 text-base sm:text-lg w-full mb-12"
                   >
                     {[
-                      { label: "Location", value: "Greater Kuala Lumpur, Malaysia" },
-                      { label: "LinkedIn", value: "https://www.linkedin.com/in/a3temii", isLink: true },
-                      { label: "Languages", value: "English / Russian" },
-                      { label: "Total experience", value: "2.3 years" },
-                      { label: "Education", value: "Current UCSI Computer Science Data Science Student" }
+                      { label: "Location", value: resume.location },
+                      { label: "LinkedIn", value: resume.linkedin, isLink: true },
+                      { label: "Languages", value: resume.languages },
+                      { label: "Total experience", value: totalExperience },
+                      { label: "Education", value: `${resume.education.degree}, ${resume.education.institution}` }
                     ].map((info, index) => (
                       <motion.p 
                         key={index}
@@ -493,25 +521,31 @@ const HeroSection = () => {
                 className="flex items-center gap-3"
               >
                 <motion.p
-                  className="text-[#FFEACF] text-sm font-light cursor-pointer transition-all duration-200"
-                  whileHover={{ fontStyle: "italic" }}
-                  onClick={() => setShowAchievements(!showAchievements)}
+                  className={`cursor-pointer text-sm font-light transition-all duration-200 ${isAchievementsCtaActive ? "italic text-[#FFF7D6]" : "text-[#FFEACF]"}`}
+                  onClick={toggleAchievementsView}
                 >
                   {showAchievements ? "Back to Portfolio!" : "View Achievements!"}
                 </motion.p>
                 
-                <motion.div
-                  className="w-12 h-12 cursor-pointer"
-                  whileHover={{ rotate: 90 }}
+                <motion.button
+                  type="button"
+                  className="h-12 w-12 cursor-pointer"
+                  animate={{
+                    rotate: isAchievementsCtaActive ? 90 : 0,
+                    scale: isAchievementsCtaActive ? 1.06 : 1
+                  }}
                   transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                  style={{ rotate: 0 }}
-                  onClick={() => setShowAchievements(!showAchievements)}
+                  onMouseEnter={() => setIsAchievementsCtaHovered(true)}
+                  onMouseLeave={() => setIsAchievementsCtaHovered(false)}
+                  onTouchStart={() => setIsAchievementsCtaPressed(true)}
+                  onTouchEnd={() => setIsAchievementsCtaPressed(false)}
+                  onClick={toggleAchievementsView}
                 >
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className="w-full h-full group"
+                    className="h-full w-full"
                   >
                     <path
                       d="M12 5v14M5 12h14"
@@ -519,7 +553,7 @@ const HeroSection = () => {
                       strokeWidth="1"
                       strokeLinecap="square"
                       strokeLinejoin="miter"
-                      className="transition-all duration-200 [.group:hover_&]:fill-transparent [.group:hover_&]:opacity-0"
+                      className={`transition-all duration-200 ${isAchievementsCtaActive ? "opacity-0" : "opacity-100"}`}
                     />
                     <path
                       d="M12 5v14M5 12h14"
@@ -528,10 +562,10 @@ const HeroSection = () => {
                       strokeLinecap="square"
                       strokeLinejoin="miter"
                       fill="none"
-                      className="transition-all duration-200 opacity-0 [.group:hover_&]:opacity-100"
+                      className={`transition-all duration-200 ${isAchievementsCtaActive ? "opacity-100" : "opacity-0"}`}
                     />
                   </svg>
-                </motion.div>
+                </motion.button>
               </motion.div>
             </div>
           </motion.div>

@@ -1,7 +1,7 @@
 {
     "resume": {
     "name": "Artemii Bakharev",
-    "title": "Full-Stack Web Developer / Founder",
+    "title": "Full-Stack Web Developer / AI Automation Builder",
     "location": "Greater Kuala Lumpur, Malaysia",
     "linkedin": "https://www.linkedin.com/in/a3temii",
     "email": "artemiibakharev@gmail.com",
@@ -41,29 +41,27 @@
   },
   "about": {
     "title": "About",
-    "experienceYears": 2.3,
+    "experienceYears": 2.8,
     "paragraphs": [
       {
-        "text": "I am a full-stack web developer with +2 years of combined experience in web development, IT support, digital creation, and entrepreneurship. My expertise includes Next.js, React, Node.js, API integration, SQL, and cloud services, with a proven track record of building and deploying high-performance web applications.",
+        "text": "I build full-stack products, automations, and internal tools that solve practical business problems. My work combines Next.js, React, Node.js, APIs, SQL, cloud infrastructure, and AI integrations to turn ideas into reliable systems people can use every day.",
         "highlights": [
-          "+2 years of combined experience",
-          "Next.js, React, Node.js, API integration, SQL"
+          "full-stack products, automations, and internal tools",
+          "Next.js, React, Node.js, APIs, SQL, cloud infrastructure, and AI integrations"
         ]
       },
       {
-        "text": "I've completed over 100 hours of hands-on IT training and delivered award-winning projects, such as Pollution Zero (1st Place – FireHacks Fall 2024) and CollabCode (Top 50% – The Dev Challenge). My portfolio ranges from business platforms (StartupSeed) to real-time multiplayer games (Turn of Life).",
+        "text": "I am proactive by nature and like taking ownership early, whether that means structuring a new SaaS idea, automating repetitive workflows, or improving a product until it becomes genuinely useful. I enjoy building software that helps people work faster, make better decisions, and reduce wasted effort.",
         "highlights": [
-          "over 100 hours of hands-on IT training",
-          "Pollution Zero",
-          "CollabCode",
-          "StartupSeed",
-          "Turn of Life"
+          "proactive by nature",
+          "genuinely useful",
+          "helps people work faster, make better decisions, and reduce wasted effort"
         ]
       },
       {
-        "text": "Beyond coding, I bring experience in project management, UI/UX design, video editing, and digital marketing, enabling me to deliver solutions that are both technically sound and user-focused. I'm driven by problem-solving, innovation, and creating tools that make processes more efficient and engaging.",
+        "text": "Alongside development, I bring product thinking, communication, and project ownership, so I can contribute not only as an engineer but also as someone trusted to drive new IT projects forward in a professional, organized way.",
         "highlights": [],
-        "footer": "📍 Open to opportunities in web development and software engineering."
+        "footer": "Open to opportunities in software engineering, automation, and new product development."
       }
     ]
   },
@@ -91,6 +89,25 @@
     }
   ],
   "experiences": [
+    {
+      "id": 5,
+      "title": "Fulhive Sdn Bhd",
+      "subtitle": "AI & Data Analysis Intern",
+      "fullTitle": "Fulhive Sdn Bhd – AI & Data Analysis Intern",
+      "duration": "Jan 2026 - Apr 2026 · 4 mos",
+      "description": "Developed SaaS product prototypes for retail businesses focused on AI-powered insights, sales analysis, and forecasting. Built automation for Shopee ad management and contributed to an internal document-filling tool for a Singapore construction company, combining practical business needs with scalable product thinking.",
+      "links": [],
+      "skills": [
+        "Full-Stack Development",
+        "AI Integration",
+        "Data Analysis",
+        "Automation",
+        "Product Prototyping",
+        "Google Cloud Platform (GCP)",
+        "Supabase"
+      ],
+      "images": ["/projects/fulhive1.png", "/projects/fulhive2.png", "/projects/fulhive3.png"]
+    },
     {
       "id": 1,
       "title": "CaseClicker.online",
@@ -167,6 +184,25 @@
   ],
   "projects": [
     {
+      "id": 8,
+      "title": "AdsGuard - Automated Ad Spend Protection for Shopee Sellers",
+      "duration": "Feb 2026 - Mar 2026 · 2 mos",
+      "description": "Built AdsGuard, a SaaS web application that automates Shopee ad campaign management to help sellers maximize revenue while protecting their budget. The platform connects to the Shopee Open Platform API, lets users define custom daily budgets and ROAS limits, and uses cron-based monitoring to scale campaigns after sales or pause underperforming ads before losses grow. It also includes daily ad scheduling, secure store connection, and Cloudflare-protected authentication.",
+      "links": [],
+      "skills": ["Next.js", "TypeScript", "Google Cloud Run", "Supabase", "Shopee Open Platform API", "Cloudflare", "Automation"],
+      "images": ["/projects/adsguard1.png", "/projects/adsguard2.png"]
+    },
+    {
+      "id": 9,
+      "title": "Optishelv Lite - AI-Powered Retail Analytics",
+      "duration": "Jan 2026 - Mar 2026 · 3 mos",
+      "description": "Developed Optishelv Lite during my internship at Fulhive Sdn Bhd, a web application that helps store owners grow revenue by learning from their transaction data. Users can upload CSV or XLSX sales files, then the system uses AI to categorize inventory, identify strong-selling trends, uncover product gaps, and generate specific Shopee-linked stocking recommendations with images. I also implemented the freemium access flow with a Supabase-based sign-up gate after the first free analysis.",
+      "links": [],
+      "skills": ["Next.js", "TypeScript", "Gemini AI", "Google Cloud Platform (GCP)", "Supabase", "CSV/XLSX Processing", "AI Integration"],
+      "images": ["/projects/optishelv1.png", "/projects/optishelv2.png", "/projects/optishelv3.png"]
+    },
+    {
+      "id": 7,
       "title": "Global Cars – Car Dealership Website",
       "duration": "May 2025 - Jul 2025 · 3 mos",
       "description": "Global Cars is a Nizhny Novgorod–based dealership specializing in buying, selling, and importing used cars from the USA and Europe. For their website I performed competitor analysis, designed a new logo and UI/UX, built an inventory dashboard, implemented a Prisma-powered database with server-side image storage, optimized the site for SEO, and deployed the production site to a VPS. Delivered features include the Main Page and a searchable Car Catalogue.",
@@ -175,6 +211,7 @@
       "images": ["/projects/globalcars1.png", "/projects/globalcars2.png"]
     },
     {
+      "id": 6,
       "title": "StartupSeed – Platform for Startups and Investors",
       "duration": "May 2025 - Jul 2025 · 3 mos",
       "description": "StartupSeed is a concept platform connecting startup founders and investors across Malaysia. I built the prototype frontend and core flows: public and private startup listings, investor discovery and filtering, a Business Model Canvas tool, a business-analyzer page, and a basic secondary-market concept for early exits. Focus was on founder-first UX, efficient discovery, and low-fee monetization model to encourage adoption.",
@@ -183,6 +220,7 @@
       "images": ["/projects/startupseed1.png", "/projects/startupseed2.png"]
     },
     {
+      "id": 4,
       "title": "CollabCode – Winner at The Dev Challenge",
       "duration": "Jan 2025 - Feb 2025 · 2 mos",
       "description": "Developed CollabCode, a real-time, browser-based coding platform that secured a winning position at The Dev Challenge, standing out among 203 projects for its impact on coding education. Engineered live coding sessions, classroom management tools, peer collaboration features, and gamified progress tracking. Built a scalable, secure system that allows seamless interaction with zero local setup, enhancing accessibility for students and educators worldwide.",
@@ -191,6 +229,7 @@
       "images": ["/projects/collabcode1.png", "/projects/collabcode2.png", "/projects/collabcode3.png"]
     },
     {
+      "id": 5,
       "title": "A3t Team Website – Frontend Developer",
       "duration": "Jan 2025 · 1 mo",
       "description": "Designed and developed an interactive, visually engaging website for A3t, showcasing team projects, hackathon participation, and business collaborations. Implemented dynamic themes inspired by popular games and ensured seamless performance across devices.",
@@ -199,6 +238,7 @@
       "images": ["/projects/a3t1.png", "/projects/a3t2.png", "/projects/a3t3.png", "/projects/a3t4.png"]
     },
     {
+      "id": 2,
       "title": "Turn of Life – Multiplayer Game Developer",
       "duration": "Dec 2024 - Jan 2025 · 2 mos",
       "description": "Developed Turn of Life, a real-time multiplayer party game blending Monopoly, The Game of Life, and Jackbox elements. Engineered live gameplay, dynamic board mechanics, and interactive mini-games. Implemented WebSocket-based communication for seamless player interactions.",
@@ -207,6 +247,7 @@
       "images": ["/projects/turnoflife1.png"]
     },
     {
+      "id": 3,
       "title": "Telegram Scraper AI – AI Engineer & Developer",
       "duration": "Dec 2024 · 1 mo",
       "description": "Developed Telegram Scraper AI, an advanced tool leveraging OpenAI and Telethon to extract and analyze chat data securely. Integrated AI-driven insights for travel planning, financial safety, and community monitoring with multilingual support.",
@@ -215,6 +256,7 @@
       "images": ["/projects/telegramscraper1.png", "/projects/telegramscraper2.png", "/projects/telegramscraper3.png", "/projects/telegramscraper4.png"]
     },
     {
+      "id": 1,
       "title": "Pollution Zero – Hackathon Winner (1st Place)",
       "duration": "Nov 2024 - Dec 2024 · 1 mo",
       "description": "Built Pollution Zero, an award-winning web-based simulation game tackling environmental challenges. Implemented AI-driven analytics, real-world environmental problem-solving, and interactive mapping. Achieved 1st place in FireHacks Fall 2024 for innovation and impact.",
