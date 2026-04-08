@@ -30,7 +30,7 @@ const InfiniteCarousel = () => {
   const velocity = useRef(0.5);
   const position = useRef(0);
   const animationFrameId = useRef<number | null>(null);
-  const experiences = [...data.experiences].sort((left, right) => left.id - right.id);
+  const experiences = [...data.experiences].sort((left, right) => right.id - left.id);
   const multipliedExperiences = Array.from({ length: 5 }, () => experiences).flat();
 
   useEffect(() => {
@@ -237,6 +237,7 @@ const Card = ({
   const cardControls = useAnimationControls();
   const displayImage = experience.images.length > 0 ? experience.images[0] : null;
   const widthClass = compactMobile ? "w-[280px]" : "w-[320px]";
+  const endYear = getExperienceEndYear(experience.duration);
 
   const triggerCardBounce = () => {
     void cardControls.start({
@@ -280,13 +281,18 @@ const Card = ({
           />
         </div>
 
-        <div className="flex flex-col overflow-hidden">
+        <div className="min-w-0 flex-1 overflow-hidden">
           <h3 className="truncate text-sm font-bold leading-tight" style={{ color: textColor }}>
             {experience.title}
           </h3>
-          <p className="truncate text-xs opacity-80" style={{ color: textColor }}>
-            {experience.subtitle}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="min-w-0 flex-1 truncate text-xs opacity-80" style={{ color: textColor }}>
+              {experience.subtitle}
+            </p>
+            <span className="shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold leading-none opacity-90" style={{ borderColor, color: textColor }}>
+              {endYear}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -357,6 +363,14 @@ const Card = ({
       </div>
     </motion.div>
   );
+};
+
+const getExperienceEndYear = (duration: string) => {
+  const dateRange = duration.split("·")[0] ?? duration;
+  const endPart = dateRange.split("-").at(-1)?.trim() ?? dateRange.trim();
+  const yearMatch = endPart.match(/\d{4}|Present/i);
+
+  return yearMatch ? yearMatch[0] : "";
 };
 
 const ExperiencePreview = ({
